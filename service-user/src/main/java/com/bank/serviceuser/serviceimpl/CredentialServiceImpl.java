@@ -1,4 +1,4 @@
-package com.bank.serviceuser.service.impl;
+package com.bank.serviceuser.serviceimpl;
 
 import com.bank.serviceuser.model.Credencial;
 import com.bank.serviceuser.repository.CredentialRepository;
