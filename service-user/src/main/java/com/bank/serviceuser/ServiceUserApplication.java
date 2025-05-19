@@ -1,4 +1,4 @@
-package com.bank.service_user;
+package com.bank.serviceuser;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
