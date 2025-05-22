@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.bank.serviceuser.serviceimpl;
 
 import com.bank.serviceuser.model.Credencial;
@@ -32,6 +27,7 @@ public class CredentialServiceImpl implements CredentialService {
 
     @Override
     public Optional<Credencial> getCredentialByUserId(Long userId) {
-        return credentialRepository.findByIdUsuario(userId);
+        return credentialRepository.findByUsuarioId(userId); // ← usa el nombre correcto
     }
+
 }
