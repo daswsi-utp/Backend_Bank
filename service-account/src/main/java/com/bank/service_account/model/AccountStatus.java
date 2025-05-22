@@ -9,12 +9,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EstadoCuenta {
+public class AccountStatus {
 
     @Id
     @Column(name = "id_estado")
     private Byte id;
 
     @Column(nullable = false, unique = true, length = 50)
-    private String nombre;
+    private String name;
 }

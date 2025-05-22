@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Cuenta {
+public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,22 +20,22 @@ public class Cuenta {
     private Long id;
 
     @Column(name = "id_usuario", nullable = false)
-    private Long idUsuario;
+    private Long userId;
 
     @Column(name = "numero_cuenta", nullable = false, unique = true, length = 20)
-    private String numeroCuenta;
+    private String accountNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_tipo_cuenta")
-    private TipoCuenta tipoCuenta;
+    private AccountType accountType;
 
     @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal saldo;
+    private BigDecimal balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estado_cuenta")
-    private EstadoCuenta estadoCuenta;
+    private AccountStatus accountStatus;
 
     @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime fechaCreacion;
+    private LocalDateTime createdAt;
 }
