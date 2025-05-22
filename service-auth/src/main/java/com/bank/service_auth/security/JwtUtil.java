@@ -10,7 +10,7 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private static final String SECRET_KEY = "mi_clave_super_secreta_para_firmar_el_jwt_que_tenga_32_bytes";
+    private static final String SECRET_KEY = "aP/+/WcXLOv8vU2XvydE7mqNH3H8FNfNsCkYp+K09+Y=";
     private static final long EXPIRATION_MS = 3600000; // 1 hora
 
     private Key getSigningKey() {
