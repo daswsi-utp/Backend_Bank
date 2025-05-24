@@ -16,13 +16,13 @@ public class AlertaFraude {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_alerta")
-    private Long id;
+    private Integer id;
 
     @Column(name = "id_usuario", nullable = false)
-    private Long idUsuario;
+    private Integer idUsuario;
 
     @Column(name = "id_transaccion")
-    private Long idTransaccion;
+    private Integer idTransaccion;
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_transaccion", nullable = false)
