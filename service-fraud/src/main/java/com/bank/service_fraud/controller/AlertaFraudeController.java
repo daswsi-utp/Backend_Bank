@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bank.service_fraud.model.AlertaFraude;
 import com.bank.service_fraud.response.GenericApiResponse;
 import com.bank.service_fraud.service.AlertaFraudeService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/alertas")
@@ -42,5 +46,11 @@ public class AlertaFraudeController {
 		List<AlertaFraude> lista = alertaService.listarTodas();
 
 		return new ResponseEntity<>(lista, HttpStatus.OK);
+	}
+
+	@PostMapping("/crear")
+	public ResponseEntity<GenericApiResponse<AlertaFraude>> crearAlerta(@Valid @RequestBody AlertaFraude alerta) {
+		GenericApiResponse<AlertaFraude> respuesta = alertaService.crearAlerta(alerta);
+		return ResponseEntity.ok(respuesta);
 	}
 }

@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.bank.service_fraud.model.AlertaFraude;
 import com.bank.service_fraud.repository.AlertaFraudeRepository;
+import com.bank.service_fraud.repository.TipoTransaccionAlertaRepository;
 import com.bank.service_fraud.response.GenericApiResponse;
 import com.bank.service_fraud.service.AlertaFraudeService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class AlertaFraudeServiceImpl implements AlertaFraudeService {
 
 	private final AlertaFraudeRepository alertaRepository;
+
+	private final TipoTransaccionAlertaRepository tipoTransaccionAlertaRepository;
 
 	@Override
 	public List<AlertaFraude> listarSospechosas() {
@@ -37,7 +40,17 @@ public class AlertaFraudeServiceImpl implements AlertaFraudeService {
 
 	@Override
 	public List<AlertaFraude> listarTodas() {
-		 return alertaRepository.findAll();
+		return alertaRepository.findAll();
 	}
 
+	@Override
+	public GenericApiResponse<AlertaFraude> crearAlerta(AlertaFraude alerta) {
+		boolean tipoExiste = tipoTransaccionAlertaRepository.existsById(alerta.getTipoTransaccion().getId());
+		if (!tipoExiste) {
+			return new GenericApiResponse<>("El tipo de transacción no existe", null, false, 1);
+		}
+
+		AlertaFraude alertaGuardada = alertaRepository.save(alerta);
+		return new GenericApiResponse<>("Alerta creada exitosamente", alertaGuardada, true, 0);
+	}
 }
