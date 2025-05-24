@@ -11,7 +11,7 @@ import lombok.*;
 public class TipoTransaccionAlerta {
 
     @Id
-    @Column(name = "id_tipo")
+    @Column(name = "id_tipo_transaccion")
     private Integer id;
 
     @Column(unique = true, nullable = false, length = 50)

@@ -9,5 +9,5 @@ import com.bank.service_fraud.model.AlertaFraude;
 
 @Repository
 public interface AlertaFraudeRepository extends JpaRepository<AlertaFraude, Integer> {
-	public List<AlertaFraude> findByScoreGreaterThan(int score);
+	public List<AlertaFraude> findByScoreRiesgoGreaterThan(int score);
 }

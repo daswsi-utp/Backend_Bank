@@ -6,10 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.service_fraud.model.AlertaFraude;
+import com.bank.service_fraud.response.GenericApiResponse;
 import com.bank.service_fraud.service.AlertaFraudeService;
 
 @RestController
@@ -24,4 +28,13 @@ public class AlertaFraudeController {
 
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
+	
+	@PatchMapping("/{id}/confirmacion")
+    public ResponseEntity<GenericApiResponse<AlertaFraude>> actualizarConfirmacion(
+            @PathVariable Integer id,
+            @RequestParam Boolean confirmada) {
+
+        GenericApiResponse<AlertaFraude> response = alertaService.actualizarConfirmacion(id, confirmada);
+        return ResponseEntity.status(response.isStatus() ? 200 : 404).body(response);
+    }
 }
