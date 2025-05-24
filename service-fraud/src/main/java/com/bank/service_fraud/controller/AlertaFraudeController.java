@@ -28,13 +28,19 @@ public class AlertaFraudeController {
 
 		return new ResponseEntity<>(lista, HttpStatus.OK);
 	}
-	
-	@PatchMapping("/{id}/confirmacion")
-    public ResponseEntity<GenericApiResponse<AlertaFraude>> actualizarConfirmacion(
-            @PathVariable Integer id,
-            @RequestParam Boolean confirmada) {
 
-        GenericApiResponse<AlertaFraude> response = alertaService.actualizarConfirmacion(id, confirmada);
-        return ResponseEntity.status(response.isStatus() ? 200 : 404).body(response);
-    }
+	@PatchMapping("/{id}/confirmacion")
+	public ResponseEntity<GenericApiResponse<AlertaFraude>> actualizarConfirmacion(@PathVariable Integer id,
+			@RequestParam Boolean confirmada) {
+
+		GenericApiResponse<AlertaFraude> response = alertaService.actualizarConfirmacion(id, confirmada);
+		return ResponseEntity.status(response.isStatus() ? 200 : 404).body(response);
+	}
+
+	@GetMapping("/listarTodas")
+	public ResponseEntity<?> listarTodas() {
+		List<AlertaFraude> lista = alertaService.listarTodas();
+
+		return new ResponseEntity<>(lista, HttpStatus.OK);
+	}
 }

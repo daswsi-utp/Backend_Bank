@@ -35,4 +35,9 @@ public class AlertaFraudeServiceImpl implements AlertaFraudeService {
 		}
 	}
 
+	@Override
+	public List<AlertaFraude> listarTodas() {
+		 return alertaRepository.findAll();
+	}
+
 }
