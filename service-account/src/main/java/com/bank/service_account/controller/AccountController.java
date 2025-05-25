@@ -1,12 +1,15 @@
 package com.bank.service_account.controller;
 
+import com.bank.service_account.dto.*;
 import com.bank.service_account.model.Account;
 import com.bank.service_account.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/accounts")
@@ -16,31 +19,42 @@ public class AccountController {
     private final AccountService accountService;
 
     @PostMapping
-    public ResponseEntity<Account> createAccount(@RequestBody Account account) {
-        return ResponseEntity.ok(accountService.createAccount(account));
+    public ResponseEntity<AccountResponseDTO> createAccount(@Valid @RequestBody AccountRequestDTO request) {
+        Account saved = accountService.createAccount(AccountMapper.toEntity(request));
+        return ResponseEntity.ok(AccountMapper.toDto(saved));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
+    public ResponseEntity<AccountResponseDTO> getAccountById(@PathVariable Long id) {
         return accountService.getAccountById(id)
+                .map(AccountMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/number/{accountNumber}")
-    public ResponseEntity<Account> getAccountByNumber(@PathVariable String accountNumber) {
+    public ResponseEntity<AccountResponseDTO> getAccountByNumber(@PathVariable String accountNumber) {
         return accountService.getAccountByNumber(accountNumber)
+                .map(AccountMapper::toDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Account>> getAccountsByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(accountService.getAccountsByUserId(userId));
+    public ResponseEntity<List<AccountResponseDTO>> getAccountsByUserId(@PathVariable Long userId) {
+        List<AccountResponseDTO> accounts = accountService.getAccountsByUserId(userId)
+                .stream()
+                .map(AccountMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(accounts);
     }
 
     @GetMapping
-    public ResponseEntity<List<Account>> getAllAccounts() {
-        return ResponseEntity.ok(accountService.getAllAccounts());
+    public ResponseEntity<List<AccountResponseDTO>> getAllAccounts() {
+        List<AccountResponseDTO> accounts = accountService.getAllAccounts()
+                .stream()
+                .map(AccountMapper::toDto)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(accounts);
     }
 }
