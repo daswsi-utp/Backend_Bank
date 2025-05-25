@@ -1,8 +1,11 @@
 package com.bank.service_account.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Data; // ⬅️ Esta línea es necesaria
+
 import java.math.BigDecimal;
 
+@Data
 public class AccountRequestDTO {
 
     @NotNull
