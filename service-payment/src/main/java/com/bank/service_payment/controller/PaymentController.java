@@ -22,6 +22,9 @@ public class PaymentController {
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();
     }
-
+    @GetMapping("/ping")
+    public String ping() {
+        return "service-payment is running";
+    }
     
 }
