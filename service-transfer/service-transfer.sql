@@ -14,8 +14,7 @@ CREATE TABLE transactions (
     status ENUM('pending', 'completed', 'failed') DEFAULT 'pending',
     reference VARCHAR(255)
 );
-
--- Optional table: fees (if transfers have any fee logic)
+-- table: fees 
 CREATE TABLE fees (
     id INT AUTO_INCREMENT PRIMARY KEY,
     transaction_id INT NOT NULL,
@@ -23,7 +22,7 @@ CREATE TABLE fees (
     FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE
 );
 
--- Optional table: daily transfer limits per account
+-- table: transfer_limits
 CREATE TABLE transfer_limits (
     account_id VARCHAR(50) PRIMARY KEY,
     daily_limit DECIMAL(12,2) NOT NULL
