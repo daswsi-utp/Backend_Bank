@@ -1,8 +1,8 @@
 -- Create database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS service_transfer;
+CREATE DATABASE IF NOT EXISTS servicetransfer;
 
 -- Use the created database
-USE service_transfer;
+USE servicetransfer;
 
 -- Main table: transactions
 CREATE TABLE transactions (
