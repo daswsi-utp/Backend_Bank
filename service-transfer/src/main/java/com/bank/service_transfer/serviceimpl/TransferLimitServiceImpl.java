@@ -3,7 +3,7 @@ package com.bank.service_transfer.serviceimpl;
 import com.bank.service_transfer.model.TransferLimit;
 import com.bank.service_transfer.repository.TransferLimitRepository;
 import com.bank.service_transfer.service.TransferLimitService;
-import com.bank.service_transfer.service.TransactionService;
+import com.bank.service_transfer.service.TransferAmountTrackingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class TransferLimitServiceImpl implements TransferLimitService {
 
     private final TransferLimitRepository transferLimitRepository;
-    private final TransactionService transactionService;
+    private final TransferAmountTrackingService transferAmountTrackingService;
 
     @Override
     @Transactional
@@ -66,7 +66,7 @@ public class TransferLimitServiceImpl implements TransferLimitService {
         TransferLimit limit = getTransferLimitByAccountId(accountId)
             .orElseThrow(() -> new IllegalArgumentException("Transfer limit not found for account: " + accountId));
 
-        BigDecimal dailyTransfers = transactionService.getDailyTransferAmount(accountId, LocalDateTime.now());
+        BigDecimal dailyTransfers = transferAmountTrackingService.getDailyTransferAmount(accountId, LocalDateTime.now());
         return limit.getDailyLimit().subtract(dailyTransfers);
     }
 

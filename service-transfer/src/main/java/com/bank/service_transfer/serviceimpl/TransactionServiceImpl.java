@@ -6,7 +6,7 @@ import com.bank.service_transfer.model.Transaction;
 import com.bank.service_transfer.repository.TransactionRepository;
 import com.bank.service_transfer.service.TransactionService;
 import com.bank.service_transfer.service.FeeService;
-import com.bank.service_transfer.service.TransferLimitService;
+import com.bank.service_transfer.service.TransferAmountTrackingService;
 import com.bank.service_transfer.dto.TransferMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,21 +24,11 @@ public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
     private final FeeService feeService;
-    private final TransferLimitService transferLimitService;
+    private final TransferAmountTrackingService transferAmountTrackingService;
 
     @Override
     @Transactional
     public TransferResponseDTO createTransfer(TransferRequestDTO transferRequest) {
-        // Validate transfer limit
-        if (!validateTransferLimit(transferRequest.getSourceAccountId(), transferRequest.getAmount())) {
-            throw new IllegalStateException("Transfer limit exceeded for account: " + transferRequest.getSourceAccountId());
-        }
-
-        // Validate account balance (this would typically integrate with account service)
-        if (!validateAccountBalance(transferRequest.getSourceAccountId(), transferRequest.getAmount())) {
-            throw new IllegalStateException("Insufficient balance for account: " + transferRequest.getSourceAccountId());
-        }
-
         // Create and save transaction
         Transaction transaction = TransferMapper.toEntity(transferRequest);
         transaction.setStatus(Transaction.TransactionStatus.PENDING);
@@ -80,13 +70,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public BigDecimal getDailyTransferAmount(String accountId, LocalDateTime date) {
-        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
-
-        return transactionRepository.findBySourceAccountIdAndDateBetween(accountId, startOfDay, endOfDay)
-            .stream()
-            .map(Transaction::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return transferAmountTrackingService.getDailyTransferAmount(accountId, date);
     }
 
     @Override
@@ -119,7 +103,8 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public boolean validateTransferLimit(String accountId, BigDecimal amount) {
-        return transferLimitService.isTransferAllowed(accountId, amount);
+        BigDecimal dailyTotal = getDailyTransferAmount(accountId, LocalDateTime.now());
+        return dailyTotal.add(amount).compareTo(new BigDecimal("1000000")) <= 0; // Example default limit of 1M
     }
 
     @Override
