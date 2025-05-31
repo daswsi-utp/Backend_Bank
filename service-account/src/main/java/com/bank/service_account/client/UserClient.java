@@ -1,9 +1,10 @@
-package com.bank.service_auth.client;
+package com.bank.service_account.client;
 
-import com.bank.service_auth.dto.UsuarioDTO;
+import com.bank.service_account.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+
 import java.util.Optional;
 
 @Component
@@ -18,15 +19,13 @@ public class UserClient {
         this.userServiceUrl = userServiceUrl;
     }
 
-    public Optional<UsuarioDTO> getUserByEmail(String email) {
+    public Optional<UserDTO> getUserById(Long id) {
         try {
-            UsuarioDTO usuario = restTemplate.getForObject(
-                userServiceUrl + "/api/users/email/" + email, UsuarioDTO.class);
-            return Optional.ofNullable(usuario);
+            String url = userServiceUrl + "/api/users/" + id;
+            UserDTO user = restTemplate.getForObject(url, UserDTO.class);
+            return Optional.ofNullable(user);
         } catch (Exception e) {
-            log.warn("No se pudo obtener el usuario por email: " + email);
             return Optional.empty();
         }
     }
 }
-
