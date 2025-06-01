@@ -1,11 +1,13 @@
 package com.bank.service_auth.serviceimpl;
 
-import com.bank.service_auth.model.AuthUsuario;
-import com.bank.service_auth.model.AuthToken;
+import com.bank.service_auth.dto.UsuarioDTO;
+import com.bank.service_auth.event.UserEventPublisher;
 import com.bank.service_auth.model.AuthSesion;
-import com.bank.service_auth.repository.AuthUsuarioRepository;
-import com.bank.service_auth.repository.AuthTokenRepository;
+import com.bank.service_auth.model.AuthToken;
+import com.bank.service_auth.model.AuthUsuario;
 import com.bank.service_auth.repository.AuthSesionRepository;
+import com.bank.service_auth.repository.AuthTokenRepository;
+import com.bank.service_auth.repository.AuthUsuarioRepository;
 import com.bank.service_auth.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,6 +23,8 @@ public class AuthServiceImpl implements AuthService {
     private final AuthUsuarioRepository authUsuarioRepository;
     private final AuthTokenRepository authTokenRepository;
     private final AuthSesionRepository authSesionRepository;
+    private final UserEventPublisher userEventPublisher;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -68,5 +72,31 @@ public class AuthServiceImpl implements AuthService {
             sesion.setCierre(LocalDateTime.now());
             authSesionRepository.save(sesion);
         });
+    }
+
+    // NUEVO MÉTODO: Registro de usuario y envío de evento
+    public AuthUsuario registrarUsuario(UsuarioDTO dto, String rawPassword) {
+        String hash = passwordEncoder.encode(rawPassword);
+
+        AuthUsuario usuario = AuthUsuario.builder()
+                .nombre(dto.getNombre())
+                .apePaterno(dto.getApePaterno())
+                .apeMaterno(dto.getApeMaterno())
+                .email(dto.getEmail())
+                .telefono(dto.getTelefono())
+                .dni(dto.getDni())
+                .departamento(dto.getDepartamento())
+                .provincia(dto.getProvincia())
+                .distrito(dto.getDistrito())
+                .direccion(dto.getDireccion())
+                .hashContrasena(hash)
+                .build();
+
+        AuthUsuario saved = authUsuarioRepository.save(usuario);
+
+        // Enviar evento a serviceuser
+        userEventPublisher.publishUserCreatedEvent(dto);
+
+        return saved;
     }
 }
