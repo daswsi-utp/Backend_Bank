@@ -1,5 +1,5 @@
-
 package com.bank.service_card.model;
+
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MovimientoTarjeta {
+public class CardMovement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,14 +21,14 @@ public class MovimientoTarjeta {
     private Long id;
 
     @Column(name = "id_tarjeta", nullable = false)
-    private Long idTarjeta;
+    private Long cardId;
 
     @Column(nullable = false)
-    private BigDecimal monto;
+    private BigDecimal amount;
 
-    private String comercio;
-    private String ubicacion;
+    private String merchant;
+    private String location;
 
     @Column(nullable = false)
-    private LocalDateTime fecha;
+    private LocalDateTime date;
 }
