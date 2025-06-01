@@ -1,7 +1,9 @@
 package com.bank.service_transfer.serviceimpl;
 
 import com.bank.service_transfer.model.Fee;
+import com.bank.service_transfer.model.Transaction;
 import com.bank.service_transfer.repository.FeeRepository;
+import com.bank.service_transfer.repository.TransactionRepository;
 import com.bank.service_transfer.service.FeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,20 +19,24 @@ import java.util.Optional;
 public class FeeServiceImpl implements FeeService {
 
     private final FeeRepository feeRepository;
-    
-    // Constants for fee calculation
+    private final TransactionRepository transactionRepository;
+
     private static final BigDecimal FEE_PERCENTAGE = new BigDecimal("0.005"); // 0.5%
     private static final BigDecimal MINIMUM_FEE_AMOUNT = new BigDecimal("100.00");
 
     @Override
     @Transactional
-    public Fee calculateTransferFee(Long transactionId, BigDecimal transferAmount) {
-        if (!isFeeApplicable(transferAmount)) {
-            return null;
-        }
+    public Fee calculateTransferFee(Long transactionId, BigDecimal amount) {
+        if (!isFeeApplicable(amount)) return null;
 
-        Fee fee = new Fee();
-        fee.setAmount(calculateFeeAmount(transferAmount));
+        Transaction tx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
+
+        Fee fee = Fee.builder()
+                .transaction(tx)
+                .amount(calculateFeeAmount(amount))
+                .build();
+
         return createFee(fee);
     }
 
@@ -52,17 +58,14 @@ public class FeeServiceImpl implements FeeService {
 
     @Override
     public BigDecimal getTotalFeesByTransactionId(Long transactionId) {
-        return getFeesByTransactionId(transactionId)
-            .stream()
-            .map(Fee::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return getFeesByTransactionId(transactionId).stream()
+                .map(Fee::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     @Override
     public BigDecimal calculateFeeAmount(BigDecimal transferAmount) {
-        return transferAmount
-            .multiply(FEE_PERCENTAGE)
-            .setScale(2, RoundingMode.HALF_UP);
+        return transferAmount.multiply(FEE_PERCENTAGE).setScale(2, RoundingMode.HALF_UP);
     }
 
     @Override
@@ -72,17 +75,15 @@ public class FeeServiceImpl implements FeeService {
 
     @Override
     public List<Fee> getFeesByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
-        List<Fee> fees = feeRepository.findByAmountGreaterThan(minAmount);
-        return fees.stream()
-            .filter(fee -> fee.getAmount().compareTo(maxAmount) <= 0)
-            .toList();
+        return feeRepository.findByAmountGreaterThan(minAmount).stream()
+                .filter(f -> f.getAmount().compareTo(maxAmount) <= 0)
+                .toList();
     }
 
     @Override
     public BigDecimal getTotalFeesCollected() {
-        return feeRepository.findAll()
-            .stream()
-            .map(Fee::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return feeRepository.findAll().stream()
+                .map(Fee::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

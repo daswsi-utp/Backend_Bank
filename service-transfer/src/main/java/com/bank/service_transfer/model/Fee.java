@@ -1,16 +1,18 @@
 package com.bank.service_transfer.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
+
 import java.math.BigDecimal;
 
-/**
- * Entity class representing fees associated with transactions
- */
-@Data
 @Entity
 @Table(name = "fees")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Fee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,19 +1,20 @@
 package com.bank.service_transfer.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import java.math.BigDecimal;
 
-/**
- * Entity class representing daily transfer limits for accounts
- */
-@Data
 @Entity
 @Table(name = "transfer_limits")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class TransferLimit {
+
     @Id
     @Column(name = "account_id")
-    private String accountId;
+    private Long accountId; // ← corregido
 
     @Column(name = "daily_limit", nullable = false)
     private BigDecimal dailyLimit;

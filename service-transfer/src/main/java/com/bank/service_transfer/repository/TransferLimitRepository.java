@@ -7,17 +7,15 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Repository interface for TransferLimit entity operations
- */
 @Repository
-public interface TransferLimitRepository extends JpaRepository<TransferLimit, String> {
-    // Find limits greater than specific amount
+public interface TransferLimitRepository extends JpaRepository<TransferLimit, Long> {
+
+    // Límites mayores a cierto monto
     List<TransferLimit> findByDailyLimitGreaterThan(BigDecimal amount);
-    
-    // Find limits less than specific amount
+
+    // Límites menores a cierto monto
     List<TransferLimit> findByDailyLimitLessThan(BigDecimal amount);
-    
-    // Find limits between range
-    List<TransferLimit> findByDailyLimitBetween(BigDecimal minAmount, BigDecimal maxAmount);
+
+    // Límites en un rango
+    List<TransferLimit> findByDailyLimitBetween(BigDecimal min, BigDecimal max);
 }
