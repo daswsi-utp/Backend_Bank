@@ -1,14 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.bank.service_auth.dto;
 
-/**
- *
- * @author ASUS
- */
-public class AuthResponseDTO {
+import lombok.Data;
 
+@Data
+public class AuthResponseDTO {
+    private String token;
+    private String refreshToken;
+    private String rol;
 }

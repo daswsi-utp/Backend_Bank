@@ -1,14 +1,10 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.bank.service_auth.dto;
 
-/**
- *
- * @author ASUS
- */
-public class RefreshTokenDTO {
+import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
+public class RefreshTokenDTO {
+    @NotBlank
+    private String refreshToken;
 }

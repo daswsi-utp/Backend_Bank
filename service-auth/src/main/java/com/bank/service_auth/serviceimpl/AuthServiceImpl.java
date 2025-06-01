@@ -1,7 +1,5 @@
 package com.bank.service_auth.serviceimpl;
 
-import com.bank.service_auth.dto.UsuarioDTO;
-import com.bank.service_auth.event.UserEventPublisher;
 import com.bank.service_auth.model.AuthSesion;
 import com.bank.service_auth.model.AuthToken;
 import com.bank.service_auth.model.AuthUsuario;
@@ -9,40 +7,79 @@ import com.bank.service_auth.repository.AuthSesionRepository;
 import com.bank.service_auth.repository.AuthTokenRepository;
 import com.bank.service_auth.repository.AuthUsuarioRepository;
 import com.bank.service_auth.service.AuthService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthUsuarioRepository authUsuarioRepository;
-    private final AuthTokenRepository authTokenRepository;
-    private final AuthSesionRepository authSesionRepository;
-    private final UserEventPublisher userEventPublisher;
+    private final AuthUsuarioRepository usuarioRepository;
+    private final AuthTokenRepository tokenRepository;
+    private final AuthSesionRepository sesionRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    @Autowired
+    public AuthServiceImpl(AuthUsuarioRepository usuarioRepository,
+                           AuthTokenRepository tokenRepository,
+                           AuthSesionRepository sesionRepository) {
+        this.usuarioRepository = usuarioRepository;
+        this.tokenRepository = tokenRepository;
+        this.sesionRepository = sesionRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
+    }
 
     @Override
     public Optional<AuthUsuario> login(String email, String rawPassword) {
-        return authUsuarioRepository.findByEmail(email)
-            .filter(user -> passwordEncoder.matches(rawPassword, user.getHashContrasena()));
+        Optional<AuthUsuario> optionalUsuario = usuarioRepository.findByEmail(email);
+
+        if (optionalUsuario.isEmpty()) return Optional.empty();
+
+        AuthUsuario usuario = optionalUsuario.get();
+
+        if (!usuario.getEstaActivo() || Boolean.TRUE.equals(usuario.getCuentaBloqueada())) {
+            return Optional.empty(); // usuario bloqueado o inactivo
+        }
+
+        boolean passwordCorrecta = passwordEncoder.matches(rawPassword, usuario.getHashContrasena());
+
+        if (!passwordCorrecta) {
+            int intentos = usuario.getIntentosFallidos() + 1;
+            usuario.setIntentosFallidos(intentos);
+
+            if (intentos >= 5) {
+                usuario.setCuentaBloqueada(true);
+            }
+
+            usuarioRepository.save(usuario);
+            return Optional.empty();
+        }
+
+        usuario.setIntentosFallidos(0); // resetear intentos fallidos
+        usuarioRepository.save(usuario);
+
+        return Optional.of(usuario);
     }
 
     @Override
     public AuthToken generarToken(AuthUsuario usuario) {
-        AuthToken token = AuthToken.builder()
+        // Aquí puedes reemplazar por JWT real usando jjwt, java-jwt, etc.
+        String token = UUID.randomUUID().toString();
+        String refreshToken = UUID.randomUUID().toString();
+
+        AuthToken authToken = AuthToken.builder()
                 .usuario(usuario)
-                .token("GENERATED_JWT") // Aquí luego integras JwtUtil
+                .token(token)
+                .refreshToken(refreshToken)
                 .fechaEmision(LocalDateTime.now())
-                .expiracion(LocalDateTime.now().plusHours(1))
                 .estaRevocado(false)
                 .build();
-        return authTokenRepository.save(token);
+
+        return tokenRepository.save(authToken);
     }
 
     @Override
@@ -54,49 +91,24 @@ public class AuthServiceImpl implements AuthService {
                 .inicio(LocalDateTime.now())
                 .estaActiva(true)
                 .build();
-        return authSesionRepository.save(sesion);
+
+        return sesionRepository.save(sesion);
     }
 
     @Override
     public void revocarToken(String token) {
-        authTokenRepository.findByToken(token).ifPresent(t -> {
-            t.setEstaRevocado(true);
-            authTokenRepository.save(t);
+        tokenRepository.findByToken(token).ifPresent(authToken -> {
+            authToken.setEstaRevocado(true);
+            tokenRepository.save(authToken);
         });
     }
 
     @Override
     public void cerrarSesion(Long idSesion) {
-        authSesionRepository.findById(idSesion).ifPresent(sesion -> {
+        sesionRepository.findById(idSesion).ifPresent(sesion -> {
             sesion.setEstaActiva(false);
             sesion.setCierre(LocalDateTime.now());
-            authSesionRepository.save(sesion);
+            sesionRepository.save(sesion);
         });
-    }
-
-    // NUEVO MÉTODO: Registro de usuario y envío de evento
-    public AuthUsuario registrarUsuario(UsuarioDTO dto, String rawPassword) {
-        String hash = passwordEncoder.encode(rawPassword);
-
-        AuthUsuario usuario = AuthUsuario.builder()
-                .nombre(dto.getNombre())
-                .apePaterno(dto.getApePaterno())
-                .apeMaterno(dto.getApeMaterno())
-                .email(dto.getEmail())
-                .telefono(dto.getTelefono())
-                .dni(dto.getDni())
-                .departamento(dto.getDepartamento())
-                .provincia(dto.getProvincia())
-                .distrito(dto.getDistrito())
-                .direccion(dto.getDireccion())
-                .hashContrasena(hash)
-                .build();
-
-        AuthUsuario saved = authUsuarioRepository.save(usuario);
-
-        // Enviar evento a serviceuser
-        userEventPublisher.publishUserCreatedEvent(dto);
-
-        return saved;
     }
 }
