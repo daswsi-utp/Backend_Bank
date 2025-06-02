@@ -1,3 +1,4 @@
 # Arquitectura del Proyecto
 
-![BankNet](https://github.com/user-attachments/assets/a98db201-4006-4df5-a102-c71e87f6d3d5)
+![BankNet-ARQ](https://github.com/user-attachments/assets/3d569a5e-305d-4d88-86aa-58642b5771ed)
+
