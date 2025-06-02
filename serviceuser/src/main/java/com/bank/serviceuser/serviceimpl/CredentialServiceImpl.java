@@ -27,7 +27,11 @@ public class CredentialServiceImpl implements CredentialService {
 
     @Override
     public Optional<Credencial> getCredentialByUserId(Long userId) {
-        return credentialRepository.findByUsuarioId(userId); // ← usa el nombre correcto
+        return credentialRepository.findByUsuarioId(userId);
     }
 
+    @Override
+    public Optional<Credencial> getCredentialByEmail(String email) {
+        return credentialRepository.findByUsuarioEmail(email);
+    }
 }

@@ -7,17 +7,15 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 
-/**
- * Repository interface for Fee entity operations
- */
 @Repository
 public interface FeeRepository extends JpaRepository<Fee, Long> {
-    // Find fees by transaction id
+
+    // Cargos asociados a una transacción
     List<Fee> findByTransactionId(Long transactionId);
-    
-    // Find fees greater than a specific amount
+
+    // Cargos mayores a cierto valor
     List<Fee> findByAmountGreaterThan(BigDecimal amount);
-    
-    // Find fees by transaction id and amount greater than
+
+    // Cargos filtrados por transacción y mínimo
     List<Fee> findByTransactionIdAndAmountGreaterThan(Long transactionId, BigDecimal amount);
 }

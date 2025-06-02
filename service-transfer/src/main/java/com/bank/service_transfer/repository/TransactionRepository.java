@@ -1,33 +1,28 @@
 package com.bank.service_transfer.repository;
 
 import com.bank.service_transfer.model.Transaction;
+import com.bank.service_transfer.model.TransferStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-/**
- * Repository interface for Transaction entity operations
- */
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    // Find transactions by source account
-    List<Transaction> findBySourceAccountId(String sourceAccountId);
-    
-    // Find transactions by destination account
-    List<Transaction> findByDestinationAccountId(String destinationAccountId);
-    
-    // Find transactions by status
-    List<Transaction> findByStatus(Transaction.TransactionStatus status);
-    
-    // Find transactions by date range
+
+    // Transacciones según cuenta origen
+    List<Transaction> findBySourceAccountId(Long sourceAccountId);
+
+    // Transacciones según cuenta destino
+    List<Transaction> findByDestinationAccountId(Long destinationAccountId);
+
+    // Transacciones por estado (usando entidad TransferStatus)
+    List<Transaction> findByStatus(TransferStatus status);
+
+    // Transacciones en un rango de fechas
     List<Transaction> findByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
-    
-    // Find transactions by source account and date range
-    List<Transaction> findBySourceAccountIdAndDateBetween(
-        String sourceAccountId, 
-        LocalDateTime startDate, 
-        LocalDateTime endDate
-    );
+
+    // Transacciones por cuenta origen y rango de fechas
+    List<Transaction> findBySourceAccountIdAndDateBetween(Long sourceAccountId, LocalDateTime startDate, LocalDateTime endDate);
 }

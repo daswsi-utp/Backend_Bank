@@ -2,11 +2,9 @@ package com.bank.service_transfer.controller;
 
 import com.bank.service_transfer.dto.TransferRequestDTO;
 import com.bank.service_transfer.dto.TransferResponseDTO;
-import com.bank.service_transfer.model.Transaction;
 import com.bank.service_transfer.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +19,8 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping
-    public ResponseEntity<TransferResponseDTO> createTransfer(@Valid @RequestBody TransferRequestDTO request) {
-        return ResponseEntity.ok(transactionService.createTransfer(request));
+    public ResponseEntity<TransferResponseDTO> createTransfer(@Valid @RequestBody TransferRequestDTO dto) {
+        return ResponseEntity.ok(transactionService.createTransfer(dto));
     }
 
     @GetMapping("/{id}")
@@ -33,32 +31,27 @@ public class TransactionController {
     }
 
     @GetMapping("/source/{accountId}")
-    public ResponseEntity<List<TransferResponseDTO>> getTransfersBySourceAccount(@PathVariable String accountId) {
+    public ResponseEntity<List<TransferResponseDTO>> getTransfersBySource(@PathVariable Long accountId) {
         return ResponseEntity.ok(transactionService.getTransfersBySourceAccount(accountId));
     }
 
     @GetMapping("/destination/{accountId}")
-    public ResponseEntity<List<TransferResponseDTO>> getTransfersByDestinationAccount(@PathVariable String accountId) {
+    public ResponseEntity<List<TransferResponseDTO>> getTransfersByDestination(@PathVariable Long accountId) {
         return ResponseEntity.ok(transactionService.getTransfersByDestinationAccount(accountId));
     }
 
-    @GetMapping("/status/{status}")
-    public ResponseEntity<List<TransferResponseDTO>> getTransfersByStatus(
-            @PathVariable Transaction.TransactionStatus status) {
-        return ResponseEntity.ok(transactionService.getTransfersByStatus(status));
-    }
-
-    @GetMapping("/date-range")
+    @GetMapping("/range")
     public ResponseEntity<List<TransferResponseDTO>> getTransfersByDateRange(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
-        return ResponseEntity.ok(transactionService.getTransfersByDateRange(startDate, endDate));
+            @RequestParam String from,
+            @RequestParam String to) {
+        return ResponseEntity.ok(transactionService.getTransfersByDateRange(
+                LocalDateTime.parse(from),
+                LocalDateTime.parse(to)
+        ));
     }
 
-    @PatchMapping("/{id}/status")
-    public ResponseEntity<TransferResponseDTO> updateTransferStatus(
-            @PathVariable Long id,
-            @RequestParam Transaction.TransactionStatus newStatus) {
-        return ResponseEntity.ok(transactionService.updateTransferStatus(id, newStatus));
+    @PutMapping("/{id}/status/{statusId}")
+    public ResponseEntity<TransferResponseDTO> updateStatus(@PathVariable Long id, @PathVariable Byte statusId) {
+        return ResponseEntity.ok(transactionService.updateTransferStatus(id, statusId));
     }
 }

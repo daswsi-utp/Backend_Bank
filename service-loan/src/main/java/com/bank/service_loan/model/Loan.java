@@ -1,60 +1,43 @@
 package com.bank.service_loan.model;
 
-
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import lombok.*;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "prestamos")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_prestamo")
     private Long id;
 
-    private String clientId;
-    private Double amount;
-    private Double interestRate;
-    private LocalDate startDate;
-    private Integer termMonths;
+    @Column(name = "id_usuario", nullable = false)
+    private Long userId;
 
-    //Getters and Setters
+    @Column(name = "monto_solicitado", nullable = false)
+    private BigDecimal requestedAmount;
 
-    public Long getId() {
-        return id;
-    } 
+    @Column(name = "monto_aprobado")
+    private BigDecimal approvedAmount;
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    } 
-    public String getClientId() {
-        return clientId;
-    } 
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-    
-    public Double getAmount() {
-        return amount;
-    }
-    public void setInterestRate(Double interestRate) {
-        this.interestRate = interestRate;
-    }
-    
-    public Double getInterestRate() {
-        return interestRate;
-    }
-    public void setStartDate(LocalDate startDate) {
-        this.startDate = startDate;
-    }
-    
-    public LocalDate getStartDate() {
-        return startDate;
-    }
-    public void setTermMonths(Integer termMonths) {
-        this.termMonths = termMonths;
-    }
-    
-    public Integer getTermMonths() {
-        return termMonths;
-    }
+    @Column(name = "tasa_interes", nullable = false)
+    private BigDecimal interestRate;
+
+    @Column(nullable = false)
+    private Integer installments;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_estado_prestamo")
+    private LoanStatus status;
+
+    @Column(name = "fecha_solicitud", insertable = false, updatable = false)
+    private LocalDateTime requestDate;
 }

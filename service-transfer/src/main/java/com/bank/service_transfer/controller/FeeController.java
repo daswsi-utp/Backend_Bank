@@ -16,32 +16,20 @@ public class FeeController {
 
     private final FeeService feeService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Fee> getFeeById(@PathVariable Long id) {
-        return feeService.getFeeById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
     @GetMapping("/transaction/{transactionId}")
-    public ResponseEntity<List<Fee>> getFeesByTransactionId(@PathVariable Long transactionId) {
+    public ResponseEntity<List<Fee>> getByTransaction(@PathVariable Long transactionId) {
         return ResponseEntity.ok(feeService.getFeesByTransactionId(transactionId));
     }
 
-    @GetMapping("/transaction/{transactionId}/total")
-    public ResponseEntity<BigDecimal> getTotalFeesByTransactionId(@PathVariable Long transactionId) {
-        return ResponseEntity.ok(feeService.getTotalFeesByTransactionId(transactionId));
-    }
-
     @GetMapping("/range")
-    public ResponseEntity<List<Fee>> getFeesByAmountRange(
-            @RequestParam BigDecimal minAmount,
-            @RequestParam BigDecimal maxAmount) {
-        return ResponseEntity.ok(feeService.getFeesByAmountRange(minAmount, maxAmount));
+    public ResponseEntity<List<Fee>> getByAmountRange(
+            @RequestParam BigDecimal min,
+            @RequestParam BigDecimal max) {
+        return ResponseEntity.ok(feeService.getFeesByAmountRange(min, max));
     }
 
     @GetMapping("/total")
-    public ResponseEntity<BigDecimal> getTotalFeesCollected() {
+    public ResponseEntity<BigDecimal> getTotalCollected() {
         return ResponseEntity.ok(feeService.getTotalFeesCollected());
     }
 }

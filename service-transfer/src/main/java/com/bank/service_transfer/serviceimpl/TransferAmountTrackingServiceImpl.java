@@ -16,13 +16,12 @@ public class TransferAmountTrackingServiceImpl implements TransferAmountTracking
     private final TransactionRepository transactionRepository;
 
     @Override
-    public BigDecimal getDailyTransferAmount(String accountId, LocalDateTime date) {
-        LocalDateTime startOfDay = date.toLocalDate().atStartOfDay();
-        LocalDateTime endOfDay = startOfDay.plusDays(1);
+    public BigDecimal getDailyTransferAmount(Long accountId, LocalDateTime date) {
+        LocalDateTime start = date.toLocalDate().atStartOfDay();
+        LocalDateTime end = start.plusDays(1);
 
-        return transactionRepository.findBySourceAccountIdAndDateBetween(accountId, startOfDay, endOfDay)
-            .stream()
-            .map(Transaction::getAmount)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return transactionRepository.findBySourceAccountIdAndDateBetween(accountId, start, end).stream()
+                .map(Transaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

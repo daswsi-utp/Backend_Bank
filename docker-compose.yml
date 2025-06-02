@@ -1,0 +1,100 @@
+
+services:
+  service-user:
+    build:
+      context: ./serviceuser
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-auth:
+    build:
+      context: ./service-auth
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-account:
+    build:
+      context: ./service-account
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-transfer:
+    build:
+      context: ./service-transfer
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-card:
+    build:
+      context: ./service-card
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-payment:
+    build:
+      context: ./service-payment
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-loan:
+    build:
+      context: ./service-loan
+    ports:
+      - "8087:8087"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-log:
+    build:
+      context: ./service-log
+    ports:
+      - "8088:8088"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-fraud:
+    build:
+      context: ./service-fraud
+    ports:
+      - "8089:8089"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  service-employee:
+    build:
+      context: ./service-employee
+    ports:
+      - "8090:8090"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    depends_on:
+      - service-user
+      - service-auth
+      - service-account
+      - service-transfer
+      - service-card
+      - service-payment
+      - service-loan
+      - service-log
+      - service-fraud
+      - service-employee

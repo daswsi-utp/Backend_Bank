@@ -1,17 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
 package com.bank.serviceuser.serviceimpl;
 
+import com.bank.serviceuser.model.Credencial;
 import com.bank.serviceuser.model.Usuario;
 import com.bank.serviceuser.repository.UserRepository;
 import com.bank.serviceuser.service.UserService;
+import com.bank.serviceuser.repository.CredentialRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,15 +18,28 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final CredentialRepository credentialRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, CredentialRepository credentialRepository) {
         this.userRepository = userRepository;
+        this.credentialRepository = credentialRepository;
     }
 
     @Override
-    public Usuario createUser(Usuario user) {
-        return userRepository.save(user);
+    public Usuario createUser(Usuario user, String password) {
+        user.setFechaCreacion(LocalDateTime.now());
+        Usuario savedUser = userRepository.save(user);
+
+        Credencial credential = Credencial.builder()
+                .usuario(savedUser)
+                .passwordHash(password) // sin encriptar
+                .dosFactoresActivado(false)
+                .ultimoLogin(null)
+                .build();
+
+        credentialRepository.save(credential);
+        return savedUser;
     }
 
     @Override
@@ -53,19 +64,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Usuario updateUser(Long id, Usuario updatedUser) {
-        return userRepository.findById(id).map(user -> {
-            user.setNombre(updatedUser.getNombre());
-            user.setApellidoPaterno(updatedUser.getApellidoPaterno());
-user.setApellidoMaterno(updatedUser.getApellidoMaterno());
-            user.setEmail(updatedUser.getEmail());
-            user.setTelefono(updatedUser.getTelefono());
-            user.setDni(updatedUser.getDni());
-            user.setDepartamento(updatedUser.getDepartamento());
-            user.setProvincia(updatedUser.getProvincia());
-            user.setDistrito(updatedUser.getDistrito());
-            user.setDireccion(updatedUser.getDireccion());
-            return userRepository.save(user);
-        }).orElseThrow(() -> new RuntimeException("User not found"));
+        return userRepository.findById(id)
+                .map(existingUser -> {
+                    existingUser.setNombre(updatedUser.getNombre());
+                    existingUser.setApellidoPaterno(updatedUser.getApellidoPaterno());
+                    existingUser.setApellidoMaterno(updatedUser.getApellidoMaterno());
+                    existingUser.setEmail(updatedUser.getEmail());
+                    existingUser.setTelefono(updatedUser.getTelefono());
+                    existingUser.setDni(updatedUser.getDni());
+                    existingUser.setDepartamento(updatedUser.getDepartamento());
+                    existingUser.setProvincia(updatedUser.getProvincia());
+                    existingUser.setDistrito(updatedUser.getDistrito());
+                    existingUser.setDireccion(updatedUser.getDireccion());
+                    return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
     }
 
     @Override

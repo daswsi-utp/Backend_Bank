@@ -2,8 +2,8 @@ package com.bank.service_transfer.serviceimpl;
 
 import com.bank.service_transfer.model.TransferLimit;
 import com.bank.service_transfer.repository.TransferLimitRepository;
-import com.bank.service_transfer.service.TransferLimitService;
 import com.bank.service_transfer.service.TransferAmountTrackingService;
+import com.bank.service_transfer.service.TransferLimitService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,61 +18,55 @@ import java.util.Optional;
 public class TransferLimitServiceImpl implements TransferLimitService {
 
     private final TransferLimitRepository transferLimitRepository;
-    private final TransferAmountTrackingService transferAmountTrackingService;
+    private final TransferAmountTrackingService trackingService;
 
     @Override
     @Transactional
-    public TransferLimit createTransferLimit(TransferLimit transferLimit) {
-        return transferLimitRepository.save(transferLimit);
+    public TransferLimit createTransferLimit(TransferLimit limit) {
+        return transferLimitRepository.save(limit);
     }
 
     @Override
-    public Optional<TransferLimit> getTransferLimitByAccountId(String accountId) {
+    public Optional<TransferLimit> getTransferLimitByAccountId(Long accountId) {
         return transferLimitRepository.findById(accountId);
     }
 
     @Override
     @Transactional
-    public TransferLimit updateTransferLimit(String accountId, BigDecimal newLimit) {
+    public TransferLimit updateTransferLimit(Long accountId, BigDecimal newLimit) {
         TransferLimit limit = transferLimitRepository.findById(accountId)
-            .orElseThrow(() -> new IllegalArgumentException("Transfer limit not found for account: " + accountId));
-        
+                .orElseThrow(() -> new RuntimeException("Límite no encontrado para la cuenta " + accountId));
         limit.setDailyLimit(newLimit);
         return transferLimitRepository.save(limit);
     }
 
     @Override
     @Transactional
-    public void deleteTransferLimit(String accountId) {
+    public void deleteTransferLimit(Long accountId) {
         if (!transferLimitRepository.existsById(accountId)) {
-            throw new IllegalArgumentException("Transfer limit not found for account: " + accountId);
+            throw new RuntimeException("Límite no encontrado para la cuenta " + accountId);
         }
         transferLimitRepository.deleteById(accountId);
     }
 
     @Override
-    public boolean isTransferAllowed(String accountId, BigDecimal amount) {
-        Optional<TransferLimit> limitOpt = getTransferLimitByAccountId(accountId);
-        if (limitOpt.isEmpty()) {
-            return false;
-        }
-
-        BigDecimal remainingLimit = getRemainingDailyLimit(accountId);
-        return remainingLimit.compareTo(amount) >= 0;
+    public boolean isTransferAllowed(Long accountId, BigDecimal amount) {
+        BigDecimal remaining = getRemainingDailyLimit(accountId);
+        return remaining.compareTo(amount) >= 0;
     }
 
     @Override
-    public BigDecimal getRemainingDailyLimit(String accountId) {
-        TransferLimit limit = getTransferLimitByAccountId(accountId)
-            .orElseThrow(() -> new IllegalArgumentException("Transfer limit not found for account: " + accountId));
+    public BigDecimal getRemainingDailyLimit(Long accountId) {
+        TransferLimit limit = transferLimitRepository.findById(accountId)
+                .orElseThrow(() -> new RuntimeException("Límite no definido para la cuenta " + accountId));
 
-        BigDecimal dailyTransfers = transferAmountTrackingService.getDailyTransferAmount(accountId, LocalDateTime.now());
-        return limit.getDailyLimit().subtract(dailyTransfers);
+        BigDecimal used = trackingService.getDailyTransferAmount(accountId, LocalDateTime.now());
+        return limit.getDailyLimit().subtract(used);
     }
 
     @Override
-    public List<TransferLimit> getLimitsByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
-        return transferLimitRepository.findByDailyLimitBetween(minAmount, maxAmount);
+    public List<TransferLimit> getLimitsByAmountRange(BigDecimal min, BigDecimal max) {
+        return transferLimitRepository.findByDailyLimitBetween(min, max);
     }
 
     @Override

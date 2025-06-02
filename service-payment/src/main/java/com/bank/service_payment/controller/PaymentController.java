@@ -1,30 +1,41 @@
 package com.bank.service_payment.controller;
 
-import com.bank.service_payment.model.Payment;
+import com.bank.service_payment.dto.PaymentRequestDTO;
+import com.bank.service_payment.dto.PaymentResponseDTO;
 import com.bank.service_payment.service.PaymentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/payments")
+@RequestMapping("/api/payments")
+@RequiredArgsConstructor
 public class PaymentController {
 
-    @Autowired
-    private PaymentService paymentService;
+    private final PaymentService paymentService;
 
     @PostMapping
-    public Payment createPayment(@RequestBody Payment payment) {
-        return paymentService.createPayment(payment);
+    public ResponseEntity<PaymentResponseDTO> registerPayment(@Valid @RequestBody PaymentRequestDTO dto) {
+        return ResponseEntity.ok(paymentService.registerPayment(dto));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentResponseDTO> getPaymentById(@PathVariable Long id) {
+        return paymentService.getPaymentById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByAccountId(@PathVariable Long accountId) {
+        return ResponseEntity.ok(paymentService.getPaymentsByAccountId(accountId));
+    }
+
     @GetMapping
-    public List<Payment> getAllPayments() {
-        return paymentService.getAllPayments();
+    public ResponseEntity<List<PaymentResponseDTO>> getAllPayments() {
+        return ResponseEntity.ok(paymentService.getAllPayments());
     }
-    @GetMapping("/ping")
-    public String ping() {
-        return "service-payment is running";
-    }
-    
 }

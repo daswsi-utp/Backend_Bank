@@ -3,7 +3,7 @@ package com.bank.serviceuser.controller;
 import com.bank.serviceuser.model.Usuario;
 import com.bank.serviceuser.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,18 +11,29 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
+    // Crear usuario y credencial
     @PostMapping
-    public ResponseEntity<Usuario> createUser(@Valid @RequestBody Usuario user) {
-        return ResponseEntity.ok(userService.createUser(user));
+    public ResponseEntity<Usuario> createUser(@Valid @RequestBody UsuarioRequest request) {
+        Usuario user = Usuario.builder()
+                .nombre(request.getNombre())
+                .apellidoPaterno(request.getApellidoPaterno())
+                .apellidoMaterno(request.getApellidoMaterno())
+                .email(request.getEmail())
+                .telefono(request.getTelefono())
+                .dni(request.getDni())
+                .departamento(request.getDepartamento())
+                .provincia(request.getProvincia())
+                .distrito(request.getDistrito())
+                .direccion(request.getDireccion())
+                .build();
+
+        Usuario saved = userService.createUser(user, request.getPassword());
+        return ResponseEntity.ok(saved);
     }
 
     @GetMapping("/{id}")
@@ -52,8 +63,9 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Usuario> updateUser(@PathVariable Long id, @Valid @RequestBody Usuario user) {
-        return ResponseEntity.ok(userService.updateUser(id, user));
+    public ResponseEntity<Usuario> updateUser(@PathVariable Long id, @RequestBody Usuario request) {
+        Usuario updated = userService.updateUser(id, request);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")

@@ -29,5 +29,7 @@ public class UserCreateDTO {
     private String provincia;
     private String distrito;
     private String direccion;
-}
 
+    @NotBlank
+    private String password; // ← nuevo campo para credencial
+}
