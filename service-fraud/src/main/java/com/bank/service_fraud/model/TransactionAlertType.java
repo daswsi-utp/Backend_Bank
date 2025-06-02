@@ -8,12 +8,13 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TipoTransaccionAlerta {
+@Builder
+public class TransactionAlertType {
 
     @Id
     @Column(name = "id_tipo_transaccion")
     private Integer id;
 
-    @Column(unique = true, nullable = false, length = 50)
-    private String nombre;
+    @Column(nullable = false, unique = true)
+    private String name;
 }
