@@ -1,7 +1,5 @@
-
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:21-jdk
 WORKDIR /app
-COPY . /app
-RUN ./mvnw clean package -DskipTests
-EXPOSE 8080
-CMD ["java", "-jar", "target/*.jar"]
+COPY target/service-card-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8085  
+ENTRYPOINT ["java", "-jar", "app.jar"]
