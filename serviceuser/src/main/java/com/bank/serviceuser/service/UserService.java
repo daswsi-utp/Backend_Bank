@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    Usuario createUser(Usuario user);
+    Usuario createUser(Usuario user, String password); // se incluye la contraseña
     Optional<Usuario> getUserById(Long id);
     Optional<Usuario> getUserByEmail(String email);
     Optional<Usuario> getUserByDni(String dni);

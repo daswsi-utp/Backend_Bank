@@ -1,5 +1,6 @@
 package com.bank.service_auth.serviceimpl;
 
+
 import com.bank.service_auth.model.AuthSesion;
 import com.bank.service_auth.model.AuthToken;
 import com.bank.service_auth.model.AuthUsuario;
@@ -26,11 +27,12 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     public AuthServiceImpl(AuthUsuarioRepository usuarioRepository,
                            AuthTokenRepository tokenRepository,
-                           AuthSesionRepository sesionRepository) {
+                           AuthSesionRepository sesionRepository,
+                           BCryptPasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.tokenRepository = tokenRepository;
         this.sesionRepository = sesionRepository;
-        this.passwordEncoder = new BCryptPasswordEncoder();
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -67,7 +69,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthToken generarToken(AuthUsuario usuario) {
-        // Aquí puedes reemplazar por JWT real usando jjwt, java-jwt, etc.
         String token = UUID.randomUUID().toString();
         String refreshToken = UUID.randomUUID().toString();
 

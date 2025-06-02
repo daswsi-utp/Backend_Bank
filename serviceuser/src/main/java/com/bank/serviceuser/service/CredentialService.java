@@ -7,4 +7,5 @@ import java.util.Optional;
 public interface CredentialService {
     Credencial createCredential(Credencial credencial);
     Optional<Credencial> getCredentialByUserId(Long userId);
+    Optional<Credencial> getCredentialByEmail(String email);
 }

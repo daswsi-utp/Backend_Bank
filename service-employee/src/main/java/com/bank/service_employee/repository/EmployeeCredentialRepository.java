@@ -7,4 +7,7 @@ import java.util.Optional;
 
 public interface EmployeeCredentialRepository extends JpaRepository<EmployeeCredential, Long> {
     Optional<EmployeeCredential> findByEmpleadoId(Long empleadoId);
+    // repository/EmployeeCredentialRepository.java
+EmployeeCredential findByEmpleado_Email(String email);
+
 }

@@ -1,83 +1,73 @@
 package com.bank.serviceuser.controller;
 
-import com.bank.serviceuser.dto.UserCreateDTO;
-import com.bank.serviceuser.dto.UserResponseDTO;
 import com.bank.serviceuser.model.Usuario;
 import com.bank.serviceuser.service.UserService;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
+@RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-    private final ModelMapper modelMapper;
 
-    @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper) {
-        this.userService = userService;
-        this.modelMapper = modelMapper;
-    }
-
-    // Crear usuario
+    // Crear usuario y credencial
     @PostMapping
-    public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserCreateDTO dto) {
-        Usuario user = modelMapper.map(dto, Usuario.class);
-        Usuario saved = userService.createUser(user);
-        UserResponseDTO response = modelMapper.map(saved, UserResponseDTO.class);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Usuario> createUser(@Valid @RequestBody UsuarioRequest request) {
+        Usuario user = Usuario.builder()
+                .nombre(request.getNombre())
+                .apellidoPaterno(request.getApellidoPaterno())
+                .apellidoMaterno(request.getApellidoMaterno())
+                .email(request.getEmail())
+                .telefono(request.getTelefono())
+                .dni(request.getDni())
+                .departamento(request.getDepartamento())
+                .provincia(request.getProvincia())
+                .distrito(request.getDistrito())
+                .direccion(request.getDireccion())
+                .build();
+
+        Usuario saved = userService.createUser(user, request.getPassword());
+        return ResponseEntity.ok(saved);
     }
 
-    // Obtener usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
+    public ResponseEntity<Usuario> getUserById(@PathVariable Long id) {
         return userService.getUserById(id)
-                .map(user -> ResponseEntity.ok(modelMapper.map(user, UserResponseDTO.class)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener usuario por email
     @GetMapping("/email/{email}")
-    public ResponseEntity<UserResponseDTO> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<Usuario> getUserByEmail(@PathVariable String email) {
         return userService.getUserByEmail(email)
-                .map(user -> ResponseEntity.ok(modelMapper.map(user, UserResponseDTO.class)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener usuario por DNI
     @GetMapping("/dni/{dni}")
-    public ResponseEntity<UserResponseDTO> getUserByDni(@PathVariable String dni) {
+    public ResponseEntity<Usuario> getUserByDni(@PathVariable String dni) {
         return userService.getUserByDni(dni)
-                .map(user -> ResponseEntity.ok(modelMapper.map(user, UserResponseDTO.class)))
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Obtener todos los usuarios
     @GetMapping
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
-        List<UserResponseDTO> users = userService.getAllUsers().stream()
-                .map(user -> modelMapper.map(user, UserResponseDTO.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(users);
+    public ResponseEntity<List<Usuario>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    // Actualizar usuario
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserCreateDTO dto) {
-        Usuario updatedUser = modelMapper.map(dto, Usuario.class);
-        Usuario saved = userService.updateUser(id, updatedUser);
-        UserResponseDTO response = modelMapper.map(saved, UserResponseDTO.class);
-        return ResponseEntity.ok(response);
+    public ResponseEntity<Usuario> updateUser(@PathVariable Long id, @RequestBody Usuario request) {
+        Usuario updated = userService.updateUser(id, request);
+        return ResponseEntity.ok(updated);
     }
 
-    // Eliminar usuario
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);

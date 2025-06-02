@@ -1,6 +1,7 @@
 package com.bank.service_employee.controller;
 
 import com.bank.service_employee.dto.EmployeeCredentialDTO;
+import com.bank.service_employee.dto.LoginRequest;
 import com.bank.service_employee.service.EmployeeCredentialService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,4 +20,12 @@ public class EmployeeCredentialController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PostMapping("/login")
+public ResponseEntity<Object> login(@RequestBody LoginRequest request) {
+    return credentialService.login(request.getEmail(), request.getPassword())
+            .<ResponseEntity<Object>>map(ResponseEntity::ok)
+            .orElseGet(() -> ResponseEntity.status(401).body("Credenciales inválidas"));
+}
+
 }
