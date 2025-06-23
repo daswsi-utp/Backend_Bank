@@ -29,8 +29,9 @@ public class Account {
     @JoinColumn(name = "id_tipo_cuenta")
     private AccountType accountType;
 
-    @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal balance;
+    @Column(name = "saldo", nullable = false, precision = 15, scale = 2)
+private BigDecimal balance;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_estado_cuenta")

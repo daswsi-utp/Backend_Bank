@@ -4,6 +4,9 @@ import com.bank.service_transfer.dto.TransferRequestDTO;
 import com.bank.service_transfer.dto.TransferResponseDTO;
 import com.bank.service_transfer.service.TransactionService;
 import jakarta.validation.Valid;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,14 +44,19 @@ public class TransactionController {
     }
 
     @GetMapping("/range")
-    public ResponseEntity<List<TransferResponseDTO>> getTransfersByDateRange(
-            @RequestParam String from,
-            @RequestParam String to) {
-        return ResponseEntity.ok(transactionService.getTransfersByDateRange(
-                LocalDateTime.parse(from),
-                LocalDateTime.parse(to)
-        ));
+public ResponseEntity<List<TransferResponseDTO>> getTransfersByDateRange(
+        @RequestParam String from,
+        @RequestParam String to) {
+    try {
+        LocalDateTime fromDate = LocalDate.parse(from).atStartOfDay();
+        LocalDateTime toDate = LocalDate.parse(to).atTime(23, 59, 59);
+
+        return ResponseEntity.ok(transactionService.getTransfersByDateRange(fromDate, toDate));
+    } catch (DateTimeParseException e) {
+        return ResponseEntity.badRequest().build();
     }
+}
+
 
     @PutMapping("/{id}/status/{statusId}")
     public ResponseEntity<TransferResponseDTO> updateStatus(@PathVariable Long id, @PathVariable Byte statusId) {

@@ -15,14 +15,15 @@ public class AccountMapper {
     }
 
     public static AccountResponseDTO toDto(Account account) {
-        return AccountResponseDTO.builder()
-                .id(account.getId())
-                .userId(account.getUserId())
-                .accountNumber(account.getAccountNumber())
-                .balance(account.getBalance())
-                .accountTypeName(account.getAccountType().getName())
-                .accountStatusName(account.getAccountStatus().getName())
-                .createdAt(account.getCreatedAt())
-                .build();
-    }
+    return AccountResponseDTO.builder()
+            .id(account.getId())
+            .userId(account.getUserId())
+            .accountNumber(account.getAccountNumber())
+            .balance(account.getBalance())
+            .accountTypeName(account.getAccountType() != null ? account.getAccountType().getName() : "Desconocido")
+            .accountStatusName(account.getAccountStatus() != null ? account.getAccountStatus().getName() : "Desconocido")
+            .createdAt(account.getCreatedAt())
+            .build();
+}
+
 }
