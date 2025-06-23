@@ -50,11 +50,13 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<List<AccountResponseDTO>> getAllAccounts() {
-        List<AccountResponseDTO> accounts = accountService.getAllAccounts()
-                .stream()
-                .map(AccountMapper::toDto)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(accounts);
-    }
+public ResponseEntity<List<AccountResponseDTO>> getAllAccounts() {
+    List<Account> cuentas = accountService.getAllAccounts();
+    cuentas.forEach(c -> System.out.println("Cuenta: " + c.getId()));
+    List<AccountResponseDTO> accounts = cuentas.stream()
+            .map(AccountMapper::toDto)
+            .collect(Collectors.toList());
+    return ResponseEntity.ok(accounts);
+}
+
 }

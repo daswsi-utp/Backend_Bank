@@ -29,9 +29,9 @@ public class Transaction {
     @Column(name = "date", insertable = false, updatable = false)
     private LocalDateTime date;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "status") // ← aquí se relaciona con la columna `status` del SQL
-    private TransferStatus status;
+   @Enumerated(EnumType.STRING)
+@Column(name = "status")
+private TransferStatus status;
 
     private String reference;
 }

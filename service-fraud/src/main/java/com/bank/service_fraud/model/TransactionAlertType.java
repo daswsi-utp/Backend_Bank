@@ -15,6 +15,7 @@ public class TransactionAlertType {
     @Column(name = "id_tipo_transaccion")
     private Integer id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+@Column(name = "nombre", nullable = false, unique = true)
+private String name;
+
 }

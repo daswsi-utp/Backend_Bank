@@ -27,7 +27,7 @@ public class TransferMapper {
                 .destinationAccountId(transaction.getDestinationAccountId())
                 .amount(transaction.getAmount())
                 .date(transaction.getDate())
-                .statusName(transaction.getStatus().getName())
+                .statusName(transaction.getStatus().name()) // ← aquí está el cambio
                 .reference(transaction.getReference())
                 .fee(fee != null ? fee.getAmount() : BigDecimal.ZERO)
                 .build();

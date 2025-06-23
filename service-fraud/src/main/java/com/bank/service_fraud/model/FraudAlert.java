@@ -32,12 +32,12 @@ public class FraudAlert {
     @Column(name = "score_riesgo", nullable = false)
     private BigDecimal riskScore;
 
-    @Column(nullable = false, columnDefinition = "TEXT")
-    private String reason;
+@Column(name = "motivo", nullable = false, columnDefinition = "TEXT")
+private String reason;
 
     @Column(insertable = false, updatable = false)
     private LocalDateTime fecha;
 
-    @Column(nullable = false)
+    @Column(name = "confirmada", nullable = false)
     private Boolean confirmed;
 }

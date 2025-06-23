@@ -5,7 +5,6 @@ import com.bank.service_transfer.model.Fee;
 import com.bank.service_transfer.model.Transaction;
 import com.bank.service_transfer.model.TransferStatus;
 import com.bank.service_transfer.repository.TransactionRepository;
-import com.bank.service_transfer.repository.TransferStatusRepository;
 import com.bank.service_transfer.service.FeeService;
 import com.bank.service_transfer.service.TransactionService;
 import com.bank.service_transfer.service.TransferAmountTrackingService;
@@ -23,16 +22,14 @@ import java.util.Optional;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
-    private final TransferStatusRepository statusRepository;
     private final FeeService feeService;
     private final TransferAmountTrackingService trackingService;
 
     @Override
     @Transactional
     public TransferResponseDTO createTransfer(TransferRequestDTO request) {
-        Byte statusId = request.getStatusId() != null ? request.getStatusId() : 1; // 1 = PENDING
-        TransferStatus status = statusRepository.findById(statusId)
-                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+        // Usar enum directamente, 1 = PENDING
+        TransferStatus status = TransferStatus.PENDING;
 
         Transaction transaction = TransferMapper.toEntity(request, status);
         Transaction saved = transactionRepository.save(transaction);
@@ -80,10 +77,9 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction tx = transactionRepository.findById(transferId)
                 .orElseThrow(() -> new RuntimeException("Transferencia no encontrada"));
 
-        TransferStatus status = statusRepository.findById(statusId)
-                .orElseThrow(() -> new RuntimeException("Estado no encontrado"));
+        TransferStatus newStatus = TransferStatus.values()[statusId - 1]; // 1 → PENDING, 2 → APPROVED...
 
-        tx.setStatus(status);
+        tx.setStatus(newStatus);
         Transaction updated = transactionRepository.save(tx);
 
         Fee fee = feeService.getFeesByTransactionId(tx.getId()).stream().findFirst().orElse(null);
