@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="81b3ec42-0e5d-4571-9ade-9450cf901169" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/Backend_Bank.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/aws.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-account/src/main/java/com/bank/service_account/exception/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-account/src/main/java/com/bank/service_account/exception/ResourceNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-account/src/main/java/com/bank/service_account/security/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/Dockerfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/nb-configuration.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/ServiceEmployeeApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/controller/EmployeeController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/controller/EmployeeCredentialController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/dto/EmployeeCredentialDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/dto/EmployeeRequestDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/dto/EmployeeResponseDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/dto/LoginRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/dto/LoginResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/model/Employee.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/model/EmployeeCredential.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/repository/EmployeeCredentialRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/repository/EmployeeRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/security/SecurityConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/service/EmployeeCredentialService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/service/EmployeeService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/serviceimpl/EmployeeCredentialServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/java/com/bank/service_employee/serviceimpl/EmployeeServiceImpl.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/main/resources/application.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/service-employee/src/test/java/com/bank/service_employee/ServiceEmployeeApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2z3G73J8lcI3jgL6ByDwEZspXTb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Frank",
+    "last_opened_file_path": "C:/Frank/ProyectosSeptimoSemestre/Banco/Backend_Bank"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="81b3ec42-0e5d-4571-9ade-9450cf901169" name="Changes" comment="" />
+      <created>1750952173059</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750952173059</updated>
+    </task>
+    <servers />
+  </component>
+</project>

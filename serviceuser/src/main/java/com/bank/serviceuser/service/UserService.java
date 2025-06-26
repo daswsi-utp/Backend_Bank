@@ -1,16 +1,20 @@
 package com.bank.serviceuser.service;
 
-import com.bank.serviceuser.model.Usuario;
+import com.bank.serviceuser.dto.UsuarioRequestDTO;
+import com.bank.serviceuser.dto.UsuarioResponseDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    Usuario createUser(Usuario user, String password); // se incluye la contraseña
-    Optional<Usuario> getUserById(Long id);
-    Optional<Usuario> getUserByEmail(String email);
-    Optional<Usuario> getUserByDni(String dni);
-    List<Usuario> getAllUsers();
-    Usuario updateUser(Long id, Usuario updatedUser);
+
+    UsuarioResponseDTO createUser(UsuarioRequestDTO requestDTO);
+
+    Optional<UsuarioResponseDTO> getUserById(Long id);
+
+    List<UsuarioResponseDTO> getAllUsers();
+
+    UsuarioResponseDTO updateUser(Long id, UsuarioRequestDTO requestDTO);
+
     void deleteUser(Long id);
 }
