@@ -1,9 +1,8 @@
 package com.bank.service_payment.controller;
 
-import com.bank.service_payment.dto.PaymentRequestDTO;
-import com.bank.service_payment.dto.PaymentResponseDTO;
+import com.bank.service_payment.dto.CreatePaymentDTO;
+import com.bank.service_payment.dto.PaymentDTO;
 import com.bank.service_payment.service.PaymentService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,24 +17,28 @@ public class PaymentController {
     private final PaymentService paymentService;
 
     @PostMapping
-    public ResponseEntity<PaymentResponseDTO> registerPayment(@Valid @RequestBody PaymentRequestDTO dto) {
-        return ResponseEntity.ok(paymentService.registerPayment(dto));
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<PaymentResponseDTO> getPaymentById(@PathVariable Long id) {
-        return paymentService.getPaymentById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
-
-    @GetMapping("/account/{accountId}")
-    public ResponseEntity<List<PaymentResponseDTO>> getPaymentsByAccountId(@PathVariable Long accountId) {
-        return ResponseEntity.ok(paymentService.getPaymentsByAccountId(accountId));
+    public ResponseEntity<PaymentDTO> create(@RequestBody CreatePaymentDTO dto) {
+        return ResponseEntity.ok(paymentService.createPayment(dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<PaymentResponseDTO>> getAllPayments() {
+    public ResponseEntity<List<PaymentDTO>> getAll() {
         return ResponseEntity.ok(paymentService.getAllPayments());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentDTO> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentService.getPaymentById(id));
+    }
+
+    @GetMapping("/reference/{ref}")
+    public ResponseEntity<PaymentDTO> getByReference(@PathVariable("ref") String referenceNumber) {
+        return ResponseEntity.ok(paymentService.getPaymentByReference(referenceNumber));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        paymentService.deletePayment(id);
+        return ResponseEntity.noContent().build();
     }
 }

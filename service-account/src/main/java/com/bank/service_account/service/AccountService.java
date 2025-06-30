@@ -1,14 +1,14 @@
 package com.bank.service_account.service;
 
-import com.bank.service_account.model.Account;
+import com.bank.service_account.dto.*;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AccountService {
-    Account createAccount(Account account);
-    Optional<Account> getAccountById(Long id);
-    Optional<Account> getAccountByNumber(String accountNumber);
-    List<Account> getAccountsByUserId(Long userId);
-    List<Account> getAllAccounts();
+    AccountDTO createAccount(CreateAccountDTO dto);
+    AccountDTO updateAccount(Long id, UpdateAccountDTO dto);
+    void deleteAccount(Long id);
+    AccountDTO getAccountById(Long id);
+    List<AccountDTO> getAccountsByUserId(Long userId);
+    List<AccountDTO> getAllAccounts();
 }

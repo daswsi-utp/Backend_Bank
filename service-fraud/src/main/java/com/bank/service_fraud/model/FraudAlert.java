@@ -3,12 +3,15 @@ package com.bank.service_fraud.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Entity
-@Table(name = "alertas_fraude")
-@Data
+@Table(name = "alertas_fraude", indexes = {
+        @Index(name = "idx_usuario_fraude", columnList = "id_usuario"),
+        @Index(name = "idx_transaccion", columnList = "tipo_transaccion, id_transaccion")
+})
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,27 +20,27 @@ public class FraudAlert {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_alerta")
-    private Integer id;
+    private Long id;
 
     @Column(name = "id_usuario", nullable = false)
     private Long userId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_transaccion", nullable = false)
-    private TransactionAlertType transactionType;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_transaccion", nullable = false)
+    private TransactionType transactionType;
 
     @Column(name = "id_transaccion", nullable = false)
     private Long transactionId;
 
     @Column(name = "score_riesgo", nullable = false)
-    private BigDecimal riskScore;
+    private Double riskScore;
 
-@Column(name = "motivo", nullable = false, columnDefinition = "TEXT")
-private String reason;
+    @Column(name = "motivo", columnDefinition = "TEXT", nullable = false)
+    private String reason;
 
-    @Column(insertable = false, updatable = false)
-    private LocalDateTime fecha;
+    @Column(name = "accion_tomada")
+    private String actionTaken;
 
-    @Column(name = "confirmada", nullable = false)
-    private Boolean confirmed;
+    @Column(name = "fecha")
+    private Timestamp date;
 }

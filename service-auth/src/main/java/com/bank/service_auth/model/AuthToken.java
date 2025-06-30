@@ -7,7 +7,8 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "auth_tokens")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,21 +19,25 @@ public class AuthToken {
     @Column(name = "id_token")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_usuario")
-    private AuthUsuario usuario;
+    @Column(name = "id_usuario", nullable = false)
+    private Long userId;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_usuario", nullable = false)
+    private UserType userType;
+
+    @Column(name = "token", nullable = false, columnDefinition = "TEXT")
     private String token;
 
     @Column(name = "refresh_token", columnDefinition = "TEXT")
     private String refreshToken;
 
     @Column(name = "fecha_emision")
-    private LocalDateTime fechaEmision;
+    private LocalDateTime issuedAt;
 
-    private LocalDateTime expiracion;
+    @Column(name = "expiracion", nullable = false)
+    private LocalDateTime expiration;
 
     @Column(name = "esta_revocado")
-    private Boolean estaRevocado;
+    private Boolean isRevoked = false;
 }

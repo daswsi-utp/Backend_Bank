@@ -1,35 +1,47 @@
 package com.bank.service_transfer.controller;
 
-import com.bank.service_transfer.model.Fee;
+import com.bank.service_transfer.dto.FeeDTO;
 import com.bank.service_transfer.service.FeeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/fees")
-@RequiredArgsConstructor
 public class FeeController {
 
-    private final FeeService feeService;
+    @Autowired
+    private FeeService service;
 
-    @GetMapping("/transaction/{transactionId}")
-    public ResponseEntity<List<Fee>> getByTransaction(@PathVariable Long transactionId) {
-        return ResponseEntity.ok(feeService.getFeesByTransactionId(transactionId));
+    @GetMapping
+    public List<FeeDTO> getAll() {
+        return service.getAllFees();
     }
 
-    @GetMapping("/range")
-    public ResponseEntity<List<Fee>> getByAmountRange(
-            @RequestParam BigDecimal min,
-            @RequestParam BigDecimal max) {
-        return ResponseEntity.ok(feeService.getFeesByAmountRange(min, max));
+    @GetMapping("/{id}")
+    public FeeDTO getById(@PathVariable Long id) {
+        return service.getFeeById(id);
     }
 
-    @GetMapping("/total")
-    public ResponseEntity<BigDecimal> getTotalCollected() {
-        return ResponseEntity.ok(feeService.getTotalFeesCollected());
+    @PostMapping
+    public FeeDTO create(@RequestBody FeeDTO dto) {
+        return service.createFee(dto);
+    }
+
+    @PutMapping("/{id}")
+    public FeeDTO update(@PathVariable Long id, @RequestBody FeeDTO dto) {
+        return service.updateFee(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.deleteFee(id);
+    }
+
+    // Consultas adicionales
+    @GetMapping("/transfer/{transferId}")
+    public List<FeeDTO> getByTransferId(@PathVariable Long transferId) {
+        return service.getFeesByTransferId(transferId);
     }
 }

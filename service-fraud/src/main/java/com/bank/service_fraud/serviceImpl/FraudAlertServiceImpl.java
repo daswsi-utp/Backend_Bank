@@ -1,54 +1,89 @@
 package com.bank.service_fraud.serviceImpl;
 
-import com.bank.service_fraud.dto.*;
+import com.bank.service_fraud.dto.FraudAlertDTO;
 import com.bank.service_fraud.model.FraudAlert;
+import com.bank.service_fraud.model.TransactionType;
 import com.bank.service_fraud.repository.FraudAlertRepository;
 import com.bank.service_fraud.service.FraudAlertService;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FraudAlertServiceImpl implements FraudAlertService {
 
-    private final FraudAlertRepository fraudAlertRepository;
+    private final FraudAlertRepository alertRepository;
 
     @Override
-    @Transactional
-    public FraudAlertResponseDTO createAlert(FraudAlertRequestDTO requestDTO) {
-        FraudAlert entity = FraudAlertMapper.toEntity(requestDTO);
-        FraudAlert saved = fraudAlertRepository.save(entity);
-        return FraudAlertMapper.toDto(saved);
+    public List<FraudAlertDTO> getAllAlerts() {
+        return alertRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public Optional<FraudAlertResponseDTO> getAlertById(Integer id) {
-        return fraudAlertRepository.findById(id).map(FraudAlertMapper::toDto);
+    public FraudAlertDTO getAlertById(Long id) {
+        return alertRepository.findById(id).map(this::toDTO).orElse(null);
     }
 
     @Override
-    public List<FraudAlertResponseDTO> getAlertsByUserId(Long userId) {
-        return fraudAlertRepository.findByUserId(userId)
-                .stream().map(FraudAlertMapper::toDto).toList();
+    public List<FraudAlertDTO> getAlertsByUserId(Long userId) {
+        return alertRepository.findByUserId(userId).stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    public List<FraudAlertResponseDTO> getAllAlerts() {
-        return fraudAlertRepository.findAll()
-                .stream().map(FraudAlertMapper::toDto).toList();
+    public List<FraudAlertDTO> getAlertsByTransactionType(String transactionType) {
+        TransactionType type = TransactionType.valueOf(transactionType.toUpperCase());
+        return alertRepository.findByTransactionType(type).stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public FraudAlertResponseDTO confirmAlert(Integer id) {
-        FraudAlert alert = fraudAlertRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Fraud alert not found with id: " + id));
+    public FraudAlertDTO createAlert(FraudAlertDTO dto) {
+        FraudAlert entity = toEntity(dto);
+        return toDTO(alertRepository.save(entity));
+    }
 
-        alert.setConfirmed(true);
-        return FraudAlertMapper.toDto(fraudAlertRepository.save(alert));
+    @Override
+    public FraudAlertDTO updateAlert(Long id, FraudAlertDTO dto) {
+        Optional<FraudAlert> optional = alertRepository.findById(id);
+        if (optional.isPresent()) {
+            FraudAlert entity = toEntity(dto);
+            entity.setId(id);
+            return toDTO(alertRepository.save(entity));
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteAlert(Long id) {
+        alertRepository.deleteById(id);
+    }
+
+    // ---------------------
+    private FraudAlertDTO toDTO(FraudAlert entity) {
+        return FraudAlertDTO.builder()
+                .id(entity.getId())
+                .userId(entity.getUserId())
+                .transactionType(entity.getTransactionType().name())
+                .transactionId(entity.getTransactionId())
+                .riskScore(entity.getRiskScore())
+                .reason(entity.getReason())
+                .actionTaken(entity.getActionTaken())
+                .date(entity.getDate())
+                .build();
+    }
+
+    private FraudAlert toEntity(FraudAlertDTO dto) {
+        return FraudAlert.builder()
+                .userId(dto.getUserId())
+                .transactionType(TransactionType.valueOf(dto.getTransactionType().toUpperCase()))
+                .transactionId(dto.getTransactionId())
+                .riskScore(dto.getRiskScore())
+                .reason(dto.getReason())
+                .actionTaken(dto.getActionTaken())
+                .date(dto.getDate())
+                .build();
     }
 }

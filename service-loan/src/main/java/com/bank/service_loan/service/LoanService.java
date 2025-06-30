@@ -4,12 +4,18 @@ import com.bank.service_loan.dto.LoanRequestDTO;
 import com.bank.service_loan.dto.LoanResponseDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface LoanService {
-    LoanResponseDTO createLoan(LoanRequestDTO dto);
-    Optional<LoanResponseDTO> getLoanById(Long id);
-    List<LoanResponseDTO> getLoansByUserId(Long userId);
+
+    LoanResponseDTO createLoan(LoanRequestDTO request);
+
+    LoanResponseDTO getLoanById(Long id);
+
     List<LoanResponseDTO> getAllLoans();
-    LoanResponseDTO approveLoan(Long id, double approvedAmount);
+
+    List<LoanResponseDTO> getLoansByUserId(Long userId);
+
+    LoanResponseDTO updateLoan(Long id, LoanRequestDTO request);
+
+    void deleteLoan(Long id);
 }

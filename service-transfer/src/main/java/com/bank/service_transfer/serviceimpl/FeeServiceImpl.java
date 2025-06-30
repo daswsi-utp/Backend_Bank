@@ -1,89 +1,61 @@
 package com.bank.service_transfer.serviceimpl;
 
+import com.bank.service_transfer.dto.FeeDTO;
 import com.bank.service_transfer.model.Fee;
-import com.bank.service_transfer.model.Transaction;
 import com.bank.service_transfer.repository.FeeRepository;
-import com.bank.service_transfer.repository.TransactionRepository;
 import com.bank.service_transfer.service.FeeService;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
 public class FeeServiceImpl implements FeeService {
 
-    private final FeeRepository feeRepository;
-    private final TransactionRepository transactionRepository;
+    @Autowired
+    private FeeRepository repository;
 
-    private static final BigDecimal FEE_PERCENTAGE = new BigDecimal("0.005"); // 0.5%
-    private static final BigDecimal MINIMUM_FEE_AMOUNT = new BigDecimal("100.00");
+    @Autowired
+    private ModelMapper mapper;
 
     @Override
-    @Transactional
-    public Fee calculateTransferFee(Long transactionId, BigDecimal amount) {
-        if (!isFeeApplicable(amount)) return null;
-
-        Transaction tx = transactionRepository.findById(transactionId)
-                .orElseThrow(() -> new RuntimeException("Transacción no encontrada"));
-
-        Fee fee = Fee.builder()
-                .transaction(tx)
-                .amount(calculateFeeAmount(amount))
-                .build();
-
-        return createFee(fee);
+    public List<FeeDTO> getAllFees() {
+        return repository.findAll().stream()
+                .map(f -> mapper.map(f, FeeDTO.class))
+                .collect(Collectors.toList());
     }
 
     @Override
-    @Transactional
-    public Fee createFee(Fee fee) {
-        return feeRepository.save(fee);
+    public FeeDTO getFeeById(Long id) {
+        Fee fee = repository.findById(id).orElse(null);
+        return (fee != null) ? mapper.map(fee, FeeDTO.class) : null;
     }
 
     @Override
-    public Optional<Fee> getFeeById(Long id) {
-        return feeRepository.findById(id);
+    public FeeDTO createFee(FeeDTO dto) {
+        Fee fee = mapper.map(dto, Fee.class);
+        return mapper.map(repository.save(fee), FeeDTO.class);
     }
 
     @Override
-    public List<Fee> getFeesByTransactionId(Long transactionId) {
-        return feeRepository.findByTransactionId(transactionId);
+    public FeeDTO updateFee(Long id, FeeDTO dto) {
+        if (!repository.existsById(id)) return null;
+        Fee fee = mapper.map(dto, Fee.class);
+        fee.setId(id);
+        return mapper.map(repository.save(fee), FeeDTO.class);
     }
 
     @Override
-    public BigDecimal getTotalFeesByTransactionId(Long transactionId) {
-        return getFeesByTransactionId(transactionId).stream()
-                .map(Fee::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public void deleteFee(Long id) {
+        repository.deleteById(id);
     }
 
     @Override
-    public BigDecimal calculateFeeAmount(BigDecimal transferAmount) {
-        return transferAmount.multiply(FEE_PERCENTAGE).setScale(2, RoundingMode.HALF_UP);
-    }
-
-    @Override
-    public boolean isFeeApplicable(BigDecimal transferAmount) {
-        return transferAmount.compareTo(MINIMUM_FEE_AMOUNT) >= 0;
-    }
-
-    @Override
-    public List<Fee> getFeesByAmountRange(BigDecimal minAmount, BigDecimal maxAmount) {
-        return feeRepository.findByAmountGreaterThan(minAmount).stream()
-                .filter(f -> f.getAmount().compareTo(maxAmount) <= 0)
-                .toList();
-    }
-
-    @Override
-    public BigDecimal getTotalFeesCollected() {
-        return feeRepository.findAll().stream()
-                .map(Fee::getAmount)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public List<FeeDTO> getFeesByTransferId(Long transferId) {
+        return repository.findByTransferId(transferId).stream()
+                .map(f -> mapper.map(f, FeeDTO.class))
+                .collect(Collectors.toList());
     }
 }

@@ -7,8 +7,12 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "cuentas")
-@Data
+@Table(name = "cuentas", indexes = {
+        @Index(name = "idx_usuario_cuenta", columnList = "id_usuario"),
+        @Index(name = "idx_numero_cuenta", columnList = "numero_cuenta")
+})
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -25,18 +29,21 @@ public class Account {
     @Column(name = "numero_cuenta", nullable = false, unique = true, length = 20)
     private String accountNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_tipo_cuenta")
-    private AccountType accountType;
+    @Column(name = "id_tipo_cuenta", nullable = false)
+    private Byte accountTypeId;
 
-    @Column(name = "saldo", nullable = false, precision = 15, scale = 2)
-private BigDecimal balance;
+    @Column(name = "saldo", precision = 15, scale = 2)
+    private BigDecimal balance;
 
+    @Column(name = "saldo_disponible", precision = 15, scale = 2)
+    private BigDecimal availableBalance;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_estado_cuenta")
-    private AccountStatus accountStatus;
+    @Column(name = "id_estado_cuenta")
+    private Byte accountStatusId;
 
     @Column(name = "fecha_creacion", updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime creationDate;
+
+    @Column(name = "fecha_ultima_actualizacion")
+    private LocalDateTime lastUpdate;
 }

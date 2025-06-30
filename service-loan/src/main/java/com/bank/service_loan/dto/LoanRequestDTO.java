@@ -1,25 +1,23 @@
 package com.bank.service_loan.dto;
 
-import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LoanRequestDTO {
 
-    @NotNull
     private Long userId;
-
-    @NotNull
-    @DecimalMin(value = "0.01", message = "Requested amount must be greater than 0")
     private BigDecimal requestedAmount;
-
-    @NotNull
-    @DecimalMin(value = "0.01", message = "Interest rate must be greater than 0")
+    private BigDecimal approvedAmount;
+    private Byte loanTypeId;
     private BigDecimal interestRate;
-
-    @NotNull
-    @Min(value = 1, message = "Installments must be at least 1")
     private Integer installments;
+    private Byte loanStatusId;
+    private LocalDate dueDate;
 }

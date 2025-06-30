@@ -1,20 +1,15 @@
 package com.bank.service_card.service;
 
+import com.bank.service_card.dto.CardDTO;
 import com.bank.service_card.dto.CardRequestDTO;
-import com.bank.service_card.dto.CardResponseDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface CardService {
-
-    CardResponseDTO createCard(CardRequestDTO dto);
-
-    Optional<CardResponseDTO> getCardById(Long id);
-
-    Optional<CardResponseDTO> getCardByNumber(String cardNumber);
-
-    List<CardResponseDTO> getCardsByUserId(Long userId);
-
-    List<CardResponseDTO> getAllCards();
+    CardDTO createCard(CardRequestDTO request);
+    CardDTO getCardById(Long id);
+    List<CardDTO> getAllCards();
+    List<CardDTO> getCardsByUserId(Long userId);
+    CardDTO updateCard(Long id, CardRequestDTO request);
+    void deleteCard(Long id);
 }

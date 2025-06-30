@@ -1,15 +1,22 @@
 package com.bank.service_fraud.service;
 
-import com.bank.service_fraud.dto.FraudAlertRequestDTO;
-import com.bank.service_fraud.dto.FraudAlertResponseDTO;
+import com.bank.service_fraud.dto.FraudAlertDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface FraudAlertService {
-    FraudAlertResponseDTO createAlert(FraudAlertRequestDTO requestDTO);
-    Optional<FraudAlertResponseDTO> getAlertById(Integer id);
-    List<FraudAlertResponseDTO> getAlertsByUserId(Long userId);
-    List<FraudAlertResponseDTO> getAllAlerts();
-    FraudAlertResponseDTO confirmAlert(Integer id);
+
+    List<FraudAlertDTO> getAllAlerts();
+
+    FraudAlertDTO getAlertById(Long id);
+
+    List<FraudAlertDTO> getAlertsByUserId(Long userId);
+
+    List<FraudAlertDTO> getAlertsByTransactionType(String transactionType);
+
+    FraudAlertDTO createAlert(FraudAlertDTO alertDTO);
+
+    FraudAlertDTO updateAlert(Long id, FraudAlertDTO alertDTO);
+
+    void deleteAlert(Long id);
 }

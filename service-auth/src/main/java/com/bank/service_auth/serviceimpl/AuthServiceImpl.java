@@ -1,115 +1,70 @@
 package com.bank.service_auth.serviceimpl;
 
-
-import com.bank.service_auth.model.AuthSesion;
-import com.bank.service_auth.model.AuthToken;
-import com.bank.service_auth.model.AuthUsuario;
-import com.bank.service_auth.repository.AuthSesionRepository;
-import com.bank.service_auth.repository.AuthTokenRepository;
-import com.bank.service_auth.repository.AuthUsuarioRepository;
+import com.bank.service_auth.dto.LoginRequestDTO;
+import com.bank.service_auth.dto.LoginResponseDTO;
+import com.bank.service_auth.model.Credential;
+import com.bank.service_auth.model.UserType;
 import com.bank.service_auth.service.AuthService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.bank.service_auth.service.CredentialService;
+import com.bank.service_auth.service.TokenService;
+import com.bank.service_auth.service.SessionService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    private final AuthUsuarioRepository usuarioRepository;
-    private final AuthTokenRepository tokenRepository;
-    private final AuthSesionRepository sesionRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    public AuthServiceImpl(AuthUsuarioRepository usuarioRepository,
-                           AuthTokenRepository tokenRepository,
-                           AuthSesionRepository sesionRepository,
-                           BCryptPasswordEncoder passwordEncoder) {
-        this.usuarioRepository = usuarioRepository;
-        this.tokenRepository = tokenRepository;
-        this.sesionRepository = sesionRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
+    private final CredentialService credentialService;
+    private final TokenService tokenService;
+    private final SessionService sessionService;
 
     @Override
-    public Optional<AuthUsuario> login(String email, String rawPassword) {
-        Optional<AuthUsuario> optionalUsuario = usuarioRepository.findByEmail(email);
+    public LoginResponseDTO login(LoginRequestDTO loginRequest) {
+        UserType userType = UserType.valueOf(loginRequest.getUserType());
+        Optional<Credential> optCred = credentialService.findByUserIdAndType(loginRequest.getUserId(), userType);
 
-        if (optionalUsuario.isEmpty()) return Optional.empty();
-
-        AuthUsuario usuario = optionalUsuario.get();
-
-        if (!usuario.getEstaActivo() || Boolean.TRUE.equals(usuario.getCuentaBloqueada())) {
-            return Optional.empty(); // usuario bloqueado o inactivo
+        if (optCred.isEmpty()) {
+            throw new RuntimeException("Usuario no registrado");
         }
 
-        boolean passwordCorrecta = passwordEncoder.matches(rawPassword, usuario.getHashContrasena());
+        Credential cred = optCred.get();
 
-        if (!passwordCorrecta) {
-            int intentos = usuario.getIntentosFallidos() + 1;
-            usuario.setIntentosFallidos(intentos);
-
-            if (intentos >= 5) {
-                usuario.setCuentaBloqueada(true);
-            }
-
-            usuarioRepository.save(usuario);
-            return Optional.empty();
+        if (!cred.getPasswordHash().equals(loginRequest.getPassword())) {
+            throw new RuntimeException("Contraseña incorrecta");
         }
 
-        usuario.setIntentosFallidos(0); // resetear intentos fallidos
-        usuarioRepository.save(usuario);
+        if (!cred.getIsActive() || cred.getAccountLocked()) {
+            throw new RuntimeException("Cuenta inactiva o bloqueada");
+        }
 
-        return Optional.of(usuario);
-    }
+        tokenService.revokeAllTokens(cred.getUserId(), cred.getUserType());
+        var newToken = tokenService.generateToken(cred.getUserId(), cred.getUserType(), cred.getRole());
 
-    @Override
-    public AuthToken generarToken(AuthUsuario usuario) {
-        String token = UUID.randomUUID().toString();
-        String refreshToken = UUID.randomUUID().toString();
+        sessionService.registerSession(cred.getUserId(), cred.getUserType(), "127.0.0.1", "Chrome", "PC");
 
-        AuthToken authToken = AuthToken.builder()
-                .usuario(usuario)
-                .token(token)
-                .refreshToken(refreshToken)
-                .fechaEmision(LocalDateTime.now())
-                .estaRevocado(false)
+        credentialService.updateLoginMetadata(cred);
+
+        return LoginResponseDTO.builder()
+                .token(newToken.getToken())
+                .refreshToken(newToken.getRefreshToken())
+                .role(cred.getRole())
+                .twoFactorEnabled(cred.getTwoFactorEnabled())
                 .build();
-
-        return tokenRepository.save(authToken);
     }
 
     @Override
-    public AuthSesion registrarSesion(AuthUsuario usuario, String ip, String userAgent) {
-        AuthSesion sesion = AuthSesion.builder()
-                .usuario(usuario)
-                .ip(ip)
-                .userAgent(userAgent)
-                .inicio(LocalDateTime.now())
-                .estaActiva(true)
-                .build();
-
-        return sesionRepository.save(sesion);
+    public void logout(Long userId, String userTypeStr) {
+        UserType userType = UserType.valueOf(userTypeStr);
+        tokenService.revokeAllTokens(userId, userType);
+        sessionService.closeSessions(userId, userType);
     }
 
     @Override
-    public void revocarToken(String token) {
-        tokenRepository.findByToken(token).ifPresent(authToken -> {
-            authToken.setEstaRevocado(true);
-            tokenRepository.save(authToken);
-        });
-    }
-
-    @Override
-    public void cerrarSesion(Long idSesion) {
-        sesionRepository.findById(idSesion).ifPresent(sesion -> {
-            sesion.setEstaActiva(false);
-            sesion.setCierre(LocalDateTime.now());
-            sesionRepository.save(sesion);
-        });
+    public boolean validateToken(String token) {
+        // Aquí puede ir lógica real de validación con JWT
+        return token != null && !token.isBlank();
     }
 }

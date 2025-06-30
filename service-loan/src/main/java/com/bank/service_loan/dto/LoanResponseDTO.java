@@ -1,20 +1,30 @@
 package com.bank.service_loan.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class LoanResponseDTO {
+
     private Long id;
     private Long userId;
     private BigDecimal requestedAmount;
     private BigDecimal approvedAmount;
+    private Byte loanTypeId;
     private BigDecimal interestRate;
     private Integer installments;
-    private String status;
+    private Byte loanStatusId;
     private LocalDateTime requestDate;
+    private LocalDateTime approvalDate;
+    private LocalDate dueDate;
+
+    private List<LoanInstallmentResponseDTO> installmentsList;
 }

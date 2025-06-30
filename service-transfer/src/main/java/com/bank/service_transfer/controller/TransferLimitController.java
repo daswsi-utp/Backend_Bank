@@ -1,53 +1,41 @@
 package com.bank.service_transfer.controller;
 
-import com.bank.service_transfer.model.TransferLimit;
+import com.bank.service_transfer.dto.TransferLimitDTO;
 import com.bank.service_transfer.service.TransferLimitService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/limits")
-@RequiredArgsConstructor
 public class TransferLimitController {
 
-    private final TransferLimitService limitService;
+    @Autowired
+    private TransferLimitService service;
+
+    @GetMapping
+    public List<TransferLimitDTO> getAll() {
+        return service.getAllLimits();
+    }
+
+    @GetMapping("/{userId}")
+    public TransferLimitDTO getByUserId(@PathVariable Long userId) {
+        return service.getLimitByUserId(userId);
+    }
 
     @PostMapping
-    public ResponseEntity<TransferLimit> create(@RequestBody TransferLimit limit) {
-        return ResponseEntity.ok(limitService.createTransferLimit(limit));
+    public TransferLimitDTO create(@RequestBody TransferLimitDTO dto) {
+        return service.createLimit(dto);
     }
 
-    @GetMapping("/{accountId}")
-    public ResponseEntity<TransferLimit> getByAccount(@PathVariable Long accountId) {
-        return limitService.getTransferLimitByAccountId(accountId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @PutMapping("/{userId}")
+    public TransferLimitDTO update(@PathVariable Long userId, @RequestBody TransferLimitDTO dto) {
+        return service.updateLimit(userId, dto);
     }
 
-    @PutMapping("/{accountId}")
-    public ResponseEntity<TransferLimit> update(@PathVariable Long accountId, @RequestBody BigDecimal newLimit) {
-        return ResponseEntity.ok(limitService.updateTransferLimit(accountId, newLimit));
-    }
-
-    @DeleteMapping("/{accountId}")
-    public ResponseEntity<Void> delete(@PathVariable Long accountId) {
-        limitService.deleteTransferLimit(accountId);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{accountId}/available")
-    public ResponseEntity<BigDecimal> getAvailableLimit(@PathVariable Long accountId) {
-        return ResponseEntity.ok(limitService.getRemainingDailyLimit(accountId));
-    }
-
-    @GetMapping("/range")
-    public ResponseEntity<List<TransferLimit>> getLimitsByRange(
-            @RequestParam BigDecimal min,
-            @RequestParam BigDecimal max) {
-        return ResponseEntity.ok(limitService.getLimitsByAmountRange(min, max));
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable Long userId) {
+        service.deleteLimit(userId);
     }
 }
