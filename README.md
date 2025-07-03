@@ -108,3 +108,17 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - Swagger (documentación de APIs)
 
 ---
+
+## 🚀 Estructura del Proyecto
+Cada microservicio es independiente y contiene:
+
+/src
+└── main
+└── java
+└── com.banknet.[service]
+├── controller
+├── dto
+├── model
+├── repository
+├── service
+└── serviceimpl
