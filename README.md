@@ -29,3 +29,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tabla principal: `credenciales`
 
 ---
+
+### 🏦 `service-account` - Cuentas Bancarias
+- Gestiona las cuentas bancarias de los usuarios.
+- 📌 Funcionalidades:
+  - Registro de cuentas nuevas.
+  - Consulta de saldos y cuentas activas.
+  - Cambio de estado de cuenta (activa, bloqueada, cerrada).
+- 🗃️ Tablas: `cuentas`, `tipos_cuenta`, `estados_cuenta`
+
+---
