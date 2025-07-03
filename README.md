@@ -68,3 +68,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tabla principal: `pagos_servicios`
 
 ---
+
+### 💰 `service-loan` - Préstamos
+- Gestiona préstamos personales y sus pagos.
+- 📌 Funcionalidades:
+  - Solicitud, evaluación y simulación de préstamos.
+  - Registro de pagos de cuotas mensuales.
+  - Seguimiento del estado del préstamo.
+- 🗃️ Tablas: `prestamos`, `pagos_prestamo`, `estados_prestamo`
+
+---
