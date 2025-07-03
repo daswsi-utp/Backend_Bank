@@ -97,3 +97,14 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tablas: `alertas_fraude`, `tipos_transaccion_alerta`
 
 ---
+
+## 📦 Tecnologías Utilizadas
+- Java 17
+- Spring Boot
+- Spring Data JPA
+- Spring Web (REST)
+- MySQL Server
+- Maven
+- Swagger (documentación de APIs)
+
+---
