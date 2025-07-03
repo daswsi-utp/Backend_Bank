@@ -6,6 +6,8 @@ import com.bank.service_account.repository.AccountRepository;
 import com.bank.service_account.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import java.time.LocalDateTime;
+
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,18 +18,21 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
 
-    @Override
-    public AccountDTO createAccount(CreateAccountDTO dto) {
-        Account account = Account.builder()
-                .userId(dto.getUserId())
-                .accountNumber(dto.getAccountNumber())
-                .accountTypeId(dto.getAccountTypeId())
-                .balance(dto.getBalance())
-                .availableBalance(dto.getAvailableBalance())
-                .accountStatusId(dto.getAccountStatusId())
-                .build();
-        return toDTO(accountRepository.save(account));
-    }
+   @Override
+public AccountDTO createAccount(CreateAccountDTO dto) {
+    Account account = Account.builder()
+            .userId(dto.getUserId())
+            .accountNumber(dto.getAccountNumber())
+            .accountTypeId(dto.getAccountTypeId())
+            .balance(dto.getBalance())
+            .availableBalance(dto.getAvailableBalance())
+            .accountStatusId((byte) 1) // Estado activo por defecto
+            .creationDate(LocalDateTime.now())
+            .lastUpdate(LocalDateTime.now())
+            .build();
+    return toDTO(accountRepository.save(account));
+}
+
 
     @Override
     public AccountDTO updateAccount(Long id, UpdateAccountDTO dto) {

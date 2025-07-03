@@ -19,16 +19,4 @@ public class AuthController {
         LoginResponseDTO response = authService.login(request);
         return ResponseEntity.ok(response);
     }
-
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestParam Long userId, @RequestParam String userType) {
-        authService.logout(userId, userType);
-        return ResponseEntity.ok("Sesión cerrada correctamente.");
-    }
-
-    @GetMapping("/validate")
-    public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
-        boolean isValid = authService.validateToken(token);
-        return ResponseEntity.ok(isValid);
-    }
 }

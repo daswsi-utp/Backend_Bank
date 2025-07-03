@@ -11,7 +11,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/accounts")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*") // CORS permitido para pruebas
 public class AccountController {
 
     private final AccountService accountService;

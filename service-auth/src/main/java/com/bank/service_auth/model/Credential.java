@@ -34,6 +34,9 @@ public class Credential {
     @Column(name = "rol", nullable = false)
     private String role = "CLIENTE";
 
+    @Column(name = "email", nullable = false, unique = true) // 👈 Nueva columna
+    private String email;
+
     @Column(name = "esta_activo")
     private Boolean isActive = true;
 
