@@ -87,3 +87,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tabla principal: `logs_usuario`
 
 ---
+
+### 🧠 `service-fraud` - Detección de Fraude
+- Detecta transacciones sospechosas con lógica de riesgo.
+- 📌 Funcionalidades:
+  - Análisis de transacciones con score de riesgo.
+  - Generación y gestión de alertas de fraude.
+  - Confirmación o rechazo manual desde el panel administrativo.
+- 🗃️ Tablas: `alertas_fraude`, `tipos_transaccion_alerta`
+
+---
