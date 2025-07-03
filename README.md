@@ -59,3 +59,12 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tablas: `tarjetas`, `movimientos_tarjeta`, `tipos_tarjeta`, `estados_tarjeta`
 
 ---
+
+### 💸 `service-payment` - Pagos de Servicios
+- Permite realizar pagos de servicios públicos (agua, luz, internet).
+- 📌 Funcionalidades:
+  - Validación de número de referencia y saldo.
+  - Registro e historial de pagos por cuenta.
+- 🗃️ Tabla principal: `pagos_servicios`
+
+---
