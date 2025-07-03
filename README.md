@@ -49,3 +49,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tablas: `transferencias`, `estados_transferencia`
 
 ---
+
+### 💳 `service-card` - Tarjetas de Débito
+- Administra las tarjetas de débito vinculadas a los usuarios.
+- 📌 Funcionalidades:
+  - Generación automática de tarjeta y CVV.
+  - Activación y bloqueo de tarjetas.
+  - Registro de movimientos de tarjeta.
+- 🗃️ Tablas: `tarjetas`, `movimientos_tarjeta`, `tipos_tarjeta`, `estados_tarjeta`
+
+---
