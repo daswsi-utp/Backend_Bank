@@ -19,3 +19,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tabla principal: `usuarios`
 
 ---
+
+### 🔑 `service-auth` - Autenticación y Credenciales
+- Controla el acceso al sistema mediante validación de credenciales.
+- 📌 Funcionalidades:
+  - Login con `email` y `contraseña`.
+  - Retorno de `userId`, `rol` y datos del usuario.
+  - Opcional: manejo de tokens, 2FA.
+- 🗃️ Tabla principal: `credenciales`
+
+---
