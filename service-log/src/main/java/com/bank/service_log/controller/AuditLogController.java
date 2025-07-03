@@ -11,8 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/logs")
-@RequiredArgsConstructor
-@CrossOrigin(origins = "*") // Permitir peticiones desde cualquier origen (útil para Postman o frontend)
+@RequiredArgsConstructor // Permitir peticiones desde cualquier origen (útil para Postman o frontend)
 public class AuditLogController {
 
     private final AuditLogService auditLogService;
