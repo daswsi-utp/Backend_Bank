@@ -78,3 +78,12 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tablas: `prestamos`, `pagos_prestamo`, `estados_prestamo`
 
 ---
+
+### 🔒 `service-log` - Registro de Actividades
+- Registra la actividad de los usuarios para fines de auditoría y seguridad.
+- 📌 Funcionalidades:
+  - Registro de IP, navegador y acciones realizadas.
+  - Filtro por tipo de actividad y exportación de logs.
+- 🗃️ Tabla principal: `logs_usuario`
+
+---
