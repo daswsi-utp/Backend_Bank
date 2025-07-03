@@ -39,3 +39,13 @@ Este proyecto corresponde al backend de la plataforma bancaria **BankNet**, desa
 - 🗃️ Tablas: `cuentas`, `tipos_cuenta`, `estados_cuenta`
 
 ---
+
+### 🔁 `service-transfer` - Transferencias
+- Procesa y registra transferencias entre cuentas bancarias.
+- 📌 Funcionalidades:
+  - Validación de fondos y estados de cuentas.
+  - Historial de transferencias por cuenta.
+  - Integración con `service-account` para abonar/debitar automáticamente.
+- 🗃️ Tablas: `transferencias`, `estados_transferencia`
+
+---
